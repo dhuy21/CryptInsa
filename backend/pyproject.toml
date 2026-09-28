@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-p no:cacheprovider"
+markers = [
+    "slow: full substitution attack, several seconds per case",
+]
+filterwarnings = [
+    "ignore:The `fitz` API is deprecated:DeprecationWarning",
+]

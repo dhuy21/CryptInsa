@@ -2,9 +2,7 @@
 
 import random
 
-from cryptage.cesar import cesar_encrypt
-
-ALPHABET = "abcdefghijklmnopqrstuvwxyz ,."
+from cryptage.cesar import alphabet as ALPHABET, cesar_encrypt
 
 TEXTS = {
     "long": (

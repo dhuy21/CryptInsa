@@ -9,8 +9,11 @@ permissions:
 
 jobs:
   pytest:
-    runs-on: ubuntu-latest
+    # ubuntu-latest moves to Ubuntu 26.04 on 2026-10-19.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: "0"
     strategy:
       fail-fast: false
       matrix:

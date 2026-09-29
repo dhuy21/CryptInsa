@@ -1,6 +1,6 @@
 """Full substitution-attack traces for the three sample texts.
 
-Regenerate the fixture, from backend/, with:
+Regenerate the fixture from backend/:
 
     ../venv/bin/python tests/tools/record_golden.py
 """
@@ -10,33 +10,34 @@ from pathlib import Path
 
 import pytest
 
-import cryptage.decrypt as decrypt
-import cryptage.main as main
 from tests.attack_cases import cases
+from tests.attack_runner import accuracy, run_attack
 
 FIXTURE = Path(__file__).parent / "fixtures" / "attack_golden.json"
+CASES = list(cases())
 
 
-def _accuracy(cipher, plaintext, key):
-    decoded = decrypt.message_from_key(cipher, key)
-    return sum(left == right for left, right in zip(decoded, plaintext)) / len(plaintext)
+@pytest.fixture(scope="module")
+def recorded_attacks():
+    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    names = [item["name"] for item in payload]
+    assert names == [name for name, _, _ in CASES]
+    return {item["name"]: item for item in payload}
 
 
 @pytest.mark.slow
 @pytest.mark.parametrize(
     ("name", "plaintext", "cipher"),
-    list(cases()),
-    ids=[name for name, _, _ in cases()],
+    CASES,
+    ids=[name for name, _, _ in CASES],
 )
-def test_attack_matches_recorded_steps(name, plaintext, cipher):
-    recorded = {item["name"]: item for item in json.loads(FIXTURE.read_text(encoding="utf-8"))}
-    expected = recorded[name]
+def test_attack_matches_recorded_steps(name, plaintext, cipher, recorded_attacks, tmp_path):
+    expected = recorded_attacks[name]
+    assert len(cipher) == len(plaintext)
     assert cipher == expected["cipher"]
 
-    partial, sure, split, punctuation = main.etape1(cipher)
-    key = main.etape2(cipher, partial, sure, split, punctuation)
-    steps = json.loads(Path(main.json_file).read_text(encoding="utf-8"))
+    key, steps = run_attack(cipher, tmp_path / "donnees.json")
 
     assert steps == expected["steps"]
     assert key == expected["final_key"]
-    assert _accuracy(cipher, plaintext, key) == pytest.approx(expected["accuracy"])
+    assert accuracy(cipher, plaintext, key) == pytest.approx(expected["accuracy"])

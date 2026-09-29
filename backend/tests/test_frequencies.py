@@ -5,7 +5,6 @@ from pathlib import Path
 import pytest
 
 import cryptage.frequences_lettres as freq
-from cryptage.decrypt import freq_francais
 
 FIXTURE = Path(__file__).parent / "fixtures" / "reference_frequencies.json"
 
@@ -40,8 +39,12 @@ def test_combination_frequency_of_one_character_divides_by_zero():
 
 
 def test_french_reference_matches_the_recorded_pdf_extraction():
+    import cryptage.decrypt as decrypt
+
     recorded = json.loads(FIXTURE.read_text(encoding="utf-8"))
     assert version("pymupdf") == recorded["pymupdf"]
     assert len(freq.text) == recorded["pdf_text_length"]
+    assert decrypt.miserable == freq.text == decrypt.text
+    assert set(decrypt.freq_francais) == set(recorded["letter_frequencies"])
     for letter, expected in recorded["letter_frequencies"].items():
-        assert freq_francais[letter] == pytest.approx(expected)
+        assert decrypt.freq_francais[letter] == pytest.approx(expected)

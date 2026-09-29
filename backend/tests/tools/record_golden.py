@@ -1,4 +1,6 @@
-"""Record the current substitution-attack steps. Run from backend/:
+"""Record the current substitution-attack steps.
+
+From backend/:
 
     ../venv/bin/python tests/tools/record_golden.py
 """
@@ -8,29 +10,21 @@ import sys
 import tempfile
 from pathlib import Path
 
-BACKEND_DIR = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(BACKEND_DIR))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-import cryptage.decrypt as decrypt
-import cryptage.main as main
 from tests.attack_cases import cases
+from tests.attack_runner import accuracy, run_attack
+from tests.support.runtime import BACKEND_DIR, ensure_backend_cwd
 
 OUTPUT = BACKEND_DIR / "tests" / "fixtures" / "attack_golden.json"
 
 
-def accuracy(cipher, plaintext, key):
-    decoded = decrypt.message_from_key(cipher, key)
-    return sum(left == right for left, right in zip(decoded, plaintext)) / len(plaintext)
-
-
 def record():
+    ensure_backend_cwd()
     recorded = []
     for name, plaintext, cipher in cases():
         with tempfile.TemporaryDirectory() as directory:
-            main.json_file = str(Path(directory) / "donnees.json")
-            partial, sure, split, punctuation = main.etape1(cipher)
-            key = main.etape2(cipher, partial, sure, split, punctuation)
-            steps = json.loads(Path(main.json_file).read_text(encoding="utf-8"))
+            key, steps = run_attack(cipher, Path(directory) / "donnees.json")
         recorded.append(
             {
                 "name": name,

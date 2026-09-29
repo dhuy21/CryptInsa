@@ -8,8 +8,41 @@ from cryptage.cesar import *
 from cryptage.vigenere import *
 import json
 import threading
+from pathlib import Path
 from flask import make_response
-import cryptage.main as main 
+import cryptage.main as main
+
+DONNEES_PATH = Path(__file__).resolve().parent / "cryptage" / "donnees.json"
+_state_lock = threading.Lock()
+
+
+class AttackSteps(list):
+    def __init__(self, initial=()):
+        super().__init__(initial)
+        self._lock = threading.Lock()
+
+    def append(self, item):
+        with self._lock:
+            super().append(item)
+
+    def clear(self):
+        with self._lock:
+            super().clear()
+
+    def snapshot(self):
+        with self._lock:
+            return list(self)
+
+
+def _load_saved_steps():
+    try:
+        return json.loads(DONNEES_PATH.read_text(encoding="utf-8"))
+    except Exception as error:
+        return {"error": str(error)}
+
+
+_saved_steps = _load_saved_steps()
+attack_steps = AttackSteps(_saved_steps) if isinstance(_saved_steps, list) else _saved_steps 
 
 app = Flask(__name__)
 CORS(app)  # autorise les requêtes depuis le frontend
@@ -79,23 +112,23 @@ def route_vigenere_decrypt():
 
 
 def call_substitution_attack():
-    # Cette fonction est appelée dans un thread séparé pour l'attaque par substitution
-    # Vous pouvez implémenter la logique de l'attaque ici
-    traduction,traduction_sur,message_split,ponctuation = main.etape1(storedcipher)
-    main.etape2(storedcipher, traduction,traduction_sur,message_split,ponctuation)
+    global attack_steps
+    steps = AttackSteps()
+    with _state_lock:
+        attack_steps = steps
+    traduction, traduction_sur, message_split, ponctuation = main.etape1(storedcipher, steps)
+    main.etape2(storedcipher, traduction, traduction_sur, message_split, ponctuation, steps)
 
 
 @app.route('/update_attack', methods=['POST'])
 def route_update_attack():
-    def read_donnees_json():
-        try:
-            with open('cryptage/donnees.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            return data
-        except Exception as e:
-            return {"error": str(e)}
-    data = read_donnees_json()
-    return jsonify(data)
+    with _state_lock:
+        current = attack_steps
+    if isinstance(current, AttackSteps):
+        payload = current.snapshot()
+    else:
+        payload = current
+    return jsonify(payload)
 @app.route('/start_attack', methods=['POST'])
 def start_attack():
     global storedcipher

@@ -1,11 +1,10 @@
 """Contract of the seven JSON routes used by frontend/public/js/flask.js.
 
 The substitution attack thread is replaced by an inline call. The real attack
-writes cryptage/donnees.json and must not run inside this file.
+must not run inside this file.
 """
 
 import json
-from pathlib import Path
 
 import pytest
 
@@ -168,17 +167,28 @@ def test_local_frontend_origins_are_echoed(client):
     assert "Origin" in preflight.headers.get("Vary", "")
 
 
-def test_update_attack_returns_the_on_disk_json(client, monkeypatch, tmp_path):
-    monkeypatch.setattr(flask_app.main, "json_file", str(tmp_path / "other.json"))
+def test_update_attack_returns_the_in_memory_steps(client):
+    assert flask_app.DONNEES_PATH.resolve() == DATA_FILE
     response = client.post("/update_attack", json={"message": "update"})
     assert response.status_code == 200
-    assert Path("cryptage/donnees.json").resolve() == DATA_FILE
     body = response.get_json()
     assert body == json.loads(DATA_FILE.read_text(encoding="utf-8"))
     assert isinstance(body, list) and body
     for step in body:
         assert set(step) == {"mot_chiffre", "mot_traduit", "dictionnaire"}
         assert isinstance(step["dictionnaire"], dict)
+
+    sentinel = [{"mot_chiffre": "x", "mot_traduit": "y", "dictionnaire": {"a": "b"}}]
+    with flask_app._state_lock:
+        previous = flask_app.attack_steps
+        flask_app.attack_steps = sentinel
+    try:
+        again = client.post("/update_attack", json={"message": "update"})
+        assert again.status_code == 200
+        assert again.get_json() == sentinel
+    finally:
+        with flask_app._state_lock:
+            flask_app.attack_steps = previous
 
 
 def test_start_attack_normalizes_text_without_running_the_attack(client, monkeypatch):

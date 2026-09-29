@@ -1,21 +1,13 @@
 """Run etape1 and etape2, then score the key the same way the recorder does."""
 
-import json
-from pathlib import Path
 
-
-def run_attack(cipher: str, json_file: Path) -> tuple[dict, list]:
+def run_attack(cipher: str) -> tuple[dict, list]:
     import cryptage.main as main
 
-    previous = main.json_file
-    main.json_file = str(json_file)
-    try:
-        partial, sure, split, punctuation = main.etape1(cipher)
-        key = main.etape2(cipher, partial, sure, split, punctuation)
-        steps = json.loads(Path(main.json_file).read_text(encoding="utf-8"))
-        return key, steps
-    finally:
-        main.json_file = previous
+    steps = []
+    partial, sure, split, punctuation = main.etape1(cipher, steps)
+    key = main.etape2(cipher, partial, sure, split, punctuation, steps)
+    return key, steps
 
 
 def accuracy(cipher: str, plaintext: str, key: dict) -> float:

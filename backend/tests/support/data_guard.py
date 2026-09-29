@@ -10,6 +10,7 @@ DATA_FILES = (
     BACKEND_DIR / "donnees.json",
     BACKEND_DIR / "cryptage" / "donnees.json",
     BACKEND_DIR / "cryptage" / "dict.txt",
+    BACKEND_DIR / "cryptage" / "reference_frequencies.json",
     BACKEND_DIR / "cryptage" / "dict_patterns.json",
     BACKEND_DIR / "cryptage" / "miserables.pdf",
 )

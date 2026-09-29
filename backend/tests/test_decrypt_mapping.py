@@ -5,6 +5,8 @@ from cryptage.decrypt import (
     message_from_key,
 )
 from cryptage.mapping import (
+    DICT_PATH,
+    charger_dictionnaire_complet,
     detecter_ponctuation,
     generer_pattern,
     mapping_with_list,
@@ -15,6 +17,14 @@ from cryptage.mapping import (
 def test_pattern_numbers_letters_in_order_of_appearance():
     assert generer_pattern("elle") == "1221"
     assert generer_pattern("pour") == "1234"
+
+
+def test_dictionary_opens_when_cwd_is_not_backend(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    patterns, by_length = charger_dictionnaire_complet()
+    assert DICT_PATH.is_file()
+    assert patterns
+    assert by_length
 
 
 def test_dictionary_lookup_finds_elle():

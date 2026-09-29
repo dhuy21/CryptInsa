@@ -1,8 +1,11 @@
 from collections import defaultdict
 from difflib import get_close_matches
+from pathlib import Path
 import copy
 import cryptage.decrypt as decrypt
 import unicodedata
+
+DICT_PATH = Path(__file__).resolve().parent / "dict.txt"
 
 
 def generer_pattern(mot):
@@ -16,12 +19,14 @@ def generer_pattern(mot):
         pattern.append(str(mapping[lettre]))
     return "".join(pattern)
 
-def charger_dictionnaire_complet(chemin_dict="cryptage/dict.txt"):
+def charger_dictionnaire_complet(chemin_dict=None):
     """
     Construit deux dictionnaires :
     - DICO_PATTERN : mapping pattern isomorphique → ensemble de mots
     - DICO_LONGUEUR : mapping longueur → ensemble de mots
     """
+    if chemin_dict is None:
+        chemin_dict = DICT_PATH
     DICO_PATTERN = defaultdict(set)
     DICO_LONGUEUR = defaultdict(set)
 

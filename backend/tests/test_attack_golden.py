@@ -31,12 +31,12 @@ def recorded_attacks():
     CASES,
     ids=[name for name, _, _ in CASES],
 )
-def test_attack_matches_recorded_steps(name, plaintext, cipher, recorded_attacks, tmp_path):
+def test_attack_matches_recorded_steps(name, plaintext, cipher, recorded_attacks):
     expected = recorded_attacks[name]
     assert len(cipher) == len(plaintext)
     assert cipher == expected["cipher"]
 
-    key, steps = run_attack(cipher, tmp_path / "donnees.json")
+    key, steps = run_attack(cipher)
 
     assert steps == expected["steps"]
     assert key == expected["final_key"]

@@ -38,13 +38,17 @@ def test_combination_frequency_of_one_character_divides_by_zero():
         freq.get_combination_frequencies("a")
 
 
+def test_reference_frequencies_open_when_cwd_is_not_backend(tmp_path, monkeypatch):
+    import cryptage.decrypt as decrypt
+
+    monkeypatch.chdir(tmp_path)
+    assert decrypt.FREQ_PATH.is_file()
+    assert decrypt.load_freq_francais() == decrypt.freq_francais
+
+
 def test_french_reference_matches_the_recorded_pdf_extraction():
     import cryptage.decrypt as decrypt
 
     recorded = json.loads(FIXTURE.read_text(encoding="utf-8"))
     assert version("pymupdf") == recorded["pymupdf"]
-    assert len(freq.text) == recorded["pdf_text_length"]
-    assert decrypt.miserable == freq.text == decrypt.text
-    assert set(decrypt.freq_francais) == set(recorded["letter_frequencies"])
-    for letter, expected in recorded["letter_frequencies"].items():
-        assert decrypt.freq_francais[letter] == pytest.approx(expected)
+    assert decrypt.freq_francais == recorded["letter_frequencies"]

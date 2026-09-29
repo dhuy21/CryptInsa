@@ -1,11 +1,12 @@
 import string
-import fitz
 
 alphabet = string.ascii_lowercase+' '+','+'.'
 
 combinaisons = [ a + b for a in string.ascii_lowercase+' '+','+'.' for b in string.ascii_lowercase+' '+','+'.']
 
 def extract_text_from_pdf(pdf_path):
+    import fitz
+
     text = ""
     with fitz.open(pdf_path) as doc:
         for page in doc:
@@ -41,6 +42,3 @@ def get_combination_frequencies(text):
     for comb in combination_frequencies:
         combination_frequencies[comb] = combination_frequencies[comb] * 100 / total_combinations
     return combination_frequencies
-
-pdf_path = "cryptage/miserables.pdf"
-text = extract_text_from_pdf(pdf_path)

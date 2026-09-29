@@ -4,6 +4,9 @@ from cryptage.vigenere import vigenere_decrypt, vigenere_encrypt
 
 
 def test_known_pair_roundtrips():
+    import cryptage.vigenere as vigenere
+
+    assert "jsonify" not in vars(vigenere)
     cipher = vigenere_encrypt("cryptographie", "mathweb")
     assert cipher == "orqwoshcahodi"
     assert vigenere_decrypt(cipher, "mathweb") == "cryptographie"

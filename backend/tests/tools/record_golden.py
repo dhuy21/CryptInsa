@@ -7,7 +7,6 @@ From backend/:
 
 import json
 import sys
-import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -23,8 +22,7 @@ def record():
     ensure_backend_cwd()
     recorded = []
     for name, plaintext, cipher in cases():
-        with tempfile.TemporaryDirectory() as directory:
-            key, steps = run_attack(cipher, Path(directory) / "donnees.json")
+        key, steps = run_attack(cipher)
         recorded.append(
             {
                 "name": name,

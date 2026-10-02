@@ -330,9 +330,3 @@ suggestionStyles.textContent = `
     }
 `;
 document.head.appendChild(suggestionStyles);
-
-// === INITIALISATION DES RÉFÉRENCES ===
-document.addEventListener('DOMContentLoaded', () => {
-    // Activer le français par défaut
-    document.getElementById('showFrenchFreq').classList.add('active');
-});

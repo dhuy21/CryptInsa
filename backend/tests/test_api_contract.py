@@ -47,6 +47,14 @@ def test_health_routes(client):
         assert response.get_json() == expected
 
 
+def test_french_frequencies_match_the_reference_table(client):
+    from cryptage.decrypt import freq_francais
+
+    response = client.get("/french-frequencies")
+    assert response.status_code == 200
+    assert response.get_json() == freq_francais
+
+
 def test_analyze_counts_letters_only(client):
     response = client.post("/analyze", json={"message": "AaB!"})
     assert response.status_code == 200

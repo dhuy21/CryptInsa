@@ -23,9 +23,9 @@ def extract_text_from_txt(file_path):
 def get_letter_frequencies(text):
     size_text = len(text)
     letter_frequencies = {letter: 0 for letter in alphabet}
-    for i in range(len(text) - 1):
-        if text[i] in letter_frequencies:
-            letter_frequencies[text[i]] += 1
+    for character in text:
+        if character in letter_frequencies:
+            letter_frequencies[character] += 1
     for letter in letter_frequencies:
         letter_frequencies[letter] = letter_frequencies[letter]*100/ size_text
     return letter_frequencies

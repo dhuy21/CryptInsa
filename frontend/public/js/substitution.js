@@ -259,7 +259,7 @@ function applyPredefinedKey(keyType) {
             
         case 'atbash':
             for (let i = 0; i < alphabet.length; i++) {
-                newMapping[alphabet[i]] = alphabet[25 - i];
+                newMapping[alphabet[i]] = i < 26 ? alphabet[25 - i] : alphabet[i];
             }
             break;
     }

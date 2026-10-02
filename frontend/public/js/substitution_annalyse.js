@@ -1,43 +1,23 @@
 // ===== SUBSTITUTION FREQUENCY ANALYSIS - JAVASCRIPT SIMPLIFIÉ ===== //
 
-// Fréquences de référence en français (en pourcentage)
-const FRENCH_FREQUENCIES = {
-    'a': 6.70, 'b': 0.79, 'c': 2.46, 'd': 2.84, 'e': 12.05, 'f': 0.94, 'g': 0.72, 'h': 0.79, 'i': 6.24,
-    'j': 0.46, 'k': 0.00, 'l': 4.83, 'm': 2.46, 'n': 5.54, 'o': 4.11, 'p': 2.11, 'q': 1.06, 'r': 5.06,
-    's': 6.02, 't': 6.18, 'u': 5.12, 'v': 1.61, 'w': 0.00, 'x': 0.33, 'y': 0.28, 'z': 0.15,
-    ' ': 18.65, ',': 1.42, '.': 1.09
-};
-
 // Alphabet français
 const FRENCH_ALPHABET = 'abcdefghijklmnopqrstuvwxyz ,.';
 
 // Variables globales
+let FRENCH_FREQUENCIES = {};
 let cipherFrequencies = {};
 let currentMapping = {};
 let analyzedText = '';
 
 // Initialisation
-document.addEventListener('DOMContentLoaded', function() {
-    initializeAnalysis();
+document.addEventListener('DOMContentLoaded', async function() {
     setupEventListeners();
-    initializeFrenchChart();
-    
-    // Load immédiatement
     loadCipherTextFromStorage();
+    FRENCH_FREQUENCIES = await window.frenchFrequencies();
+    initializeFrenchChart();
 });
 
 // ===== INITIALISATION ===== //
-function initializeAnalysis() {
-
-    // Initialiser le graphique français
-    initializeFrenchChart();
-    
-    // Ajouter l'interactivité aux graphiques après un court délai
-    setTimeout(() => {
-        addChartInteractivity();
-    }, 100);
-}
-
 function setupEventListeners() {
     document.getElementById('refreshAnalysis').addEventListener('click', loadCipherTextFromStorage);
     document.getElementById('nextStep').addEventListener('click', nextStep);

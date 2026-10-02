@@ -9,17 +9,16 @@ import cryptage.frequences_lettres as freq
 FIXTURE = Path(__file__).parent / "fixtures" / "reference_frequencies.json"
 
 
-def test_letter_count_skips_the_last_character():
-    """range(len(text) - 1) drops the final character, then divides by the full length."""
+def test_letter_count_includes_the_last_character():
     result = freq.get_letter_frequencies("ab")
     assert result["a"] == 50.0
-    assert result["b"] == 0.0
+    assert result["b"] == 50.0
 
 
-def test_single_character_text_has_every_frequency_at_zero():
+def test_single_character_text_is_one_hundred_percent():
     result = freq.get_letter_frequencies("a")
-    assert result["a"] == 0.0
-    assert sum(result.values()) == 0.0
+    assert result["a"] == 100.0
+    assert sum(result.values()) == 100.0
 
 
 def test_empty_text_divides_by_zero():

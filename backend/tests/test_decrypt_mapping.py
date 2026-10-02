@@ -52,8 +52,8 @@ def test_shared_letters_keep_their_position():
     ]
 
 
-def test_most_frequent_characters_skip_the_last_one():
-    """'aaabbc' loses its final c, so the leaders are a then b."""
+def test_most_frequent_characters_count_the_last_one():
+    """'aaabbc' counts the final c. The two leaders stay a, then b."""
     assert make_traduction_sur("aaabbc") == (("a", 50.0), ("b", 100 / 3))
 
 

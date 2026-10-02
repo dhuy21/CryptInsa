@@ -1,13 +1,3 @@
-// Fréquences de référence en français (en pourcentage)
-const FRENCH_FREQUENCIES = {
-    'e': 17.76, 's': 8.23, 'a': 7.68, 'n': 7.61, 't': 7.30,
-    'i': 7.23, 'r': 6.81, 'u': 6.05, 'l': 5.89, 'o': 5.34,
-    'd': 3.69, 'c': 3.32, 'p': 2.24, 'm': 2.23, 'v': 1.28,
-    'g': 1.10, 'f': 1.06, 'b': 0.80, 'h': 0.64, 'q': 0.54,
-    'y': 0.46, 'x': 0.38, 'j': 0.31, 'k': 0.16, 'w': 0.08, 
-    'z': 0.07, '_':6.00
-};
-
 // Alphabet français complet
 const FRENCH_ALPHABET = 'abcdefghijklmnopqrstuvwxyz ,.';
 const ALPHABET_DISPLAY = FRENCH_ALPHABET.split('');
@@ -46,6 +36,53 @@ function setupEventListeners() {
 //==PLAY==//
 let attackInterval = null;
 
+function attackIsFinal(steps) {
+    return Array.isArray(steps)
+        && steps.length > 0
+        && steps[steps.length - 1].mot_chiffre === 'final';
+}
+
+function showCurrentStep() {
+    if (!Array.isArray(dataChiffre) || dataChiffre.length === 0) {
+        return;
+    }
+    if (currentIndexData < 0 || currentIndexData >= dataChiffre.length) {
+        currentIndexData = 0;
+    }
+    const step = dataChiffre[currentIndexData];
+    motChiffre = step.mot_chiffre;
+    motTraduit = step.mot_traduit;
+    currentMapping = step.dictionnaire;
+    updateMappingDisplay();
+    applyDecryption();
+}
+
+function finishPlay() {
+    is_finished = true;
+    if (attackInterval) {
+        clearInterval(attackInterval);
+        attackInterval = null;
+    }
+    const playButton = document.getElementById('play');
+    playButton.disabled = false;
+    playButton.innerHTML = '<i class="fas fa-play"></i> Commencer';
+    stopElectricityAnimation();
+    stopLoadingParticles();
+}
+
+async function refreshAttack() {
+    dataChiffre = await window.updateAttack();
+    if (!Array.isArray(dataChiffre)) {
+        showNotification('Erreur lors de l\'analyse', 'error');
+        finishPlay();
+        return;
+    }
+    showCurrentStep();
+    if (attackIsFinal(dataChiffre)) {
+        finishPlay();
+    }
+}
+
 async function play() {
     const cipherText = localStorage.getItem('cipherText');
     
@@ -56,49 +93,35 @@ async function play() {
     
     console.log('Begin Attack');
     
-    // Mise à jour de l'interface
     const playButton = document.getElementById('play');
-    
     playButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyse...';
     playButton.disabled = true;
-    
-    // Démarrer l'animation d'électricité
     startElectricityAnimation();
-    
-    // Démarrer l'animation de particules de loading
     startLoadingParticles();
-    
-    // Réinitialiser l'état
     is_finished = false;
+    if (attackInterval) {
+        clearInterval(attackInterval);
+        attackInterval = null;
+    }
     
     try {
-        // Premier appel pour démarrer l'attaque
-        await window.updateAttack();
-        
-        // Démarrer les mises à jour périodiques (toutes les 3 secondes)
-            if (is_finished) {
-                clearInterval(attackInterval);
-                return;
-            }
-            
+        await refreshAttack();
+        if (is_finished) {
+            return;
+        }
+        attackInterval = setInterval(async () => {
             try {
-                dataChiffre = await window.updateAttack();
-                console.log('Attack data received:', dataChiffre);
-                motChiffre = dataChiffre[currentIndexData].mot_chiffre;
-                motTraduit = dataChiffre[currentIndexData].mot_traduit;
-                currentMapping = dataChiffre[currentIndexData].dictionnaire;
-                // document.getElementById('motChiffreText').value = motChiffre;
-                // document.getElementById('motTraduitText').value = motTraduit;
-                updateMappingDisplay();
-                applyDecryption();
+                await refreshAttack();
             } catch (error) {
                 console.error('Erreur lors de la mise à jour:', error);
                 showNotification('Erreur lors de l\'analyse', 'error');
+                finishPlay();
             }
+        }, 3000);
     } catch (error) {
         console.error('Erreur lors du démarrage de l\'attaque:', error);
         showNotification('Erreur lors du démarrage de l\'analyse', 'error');
-        stop();
+        finishPlay();
     }
 }
 

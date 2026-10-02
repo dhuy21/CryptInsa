@@ -351,6 +351,17 @@ async function processTextRealTime() {
     }
 }
 
+function normalizeForCesar(text) {
+    return text
+        .replace(/œ/g, 'oe')
+        .replace(/Œ/g, 'OE')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z.,]/g, ' ')
+        .replace(/\s+/g, ' ');
+}
+
 // === CHIFFREMENT CÔTÉ SERVEUR ===
 async function cesarEncryptText() {
     // Check if cesar function is available
@@ -361,7 +372,7 @@ async function cesarEncryptText() {
     }
     
     try {
-        const result = await window.cesar(elements.inputText.value, currentShift);
+        const result = await window.cesar(normalizeForCesar(elements.inputText.value), currentShift);
         // window.cesar() renvoie un objet avec une propriété encrypted
         const encryptedText = result.encrypted;
         console.log("encryptedText:", encryptedText);
@@ -382,7 +393,7 @@ async function cesarDecryptText() {
     }
     
     try {
-        const result = await window.cesarDecrypt(elements.inputText.value, currentShift);
+        const result = await window.cesarDecrypt(normalizeForCesar(elements.inputText.value), currentShift);
         // window.cesarDecrypt() renvoie un objet avec une propriété decrypted
         const decryptedText = result.decrypted || result.result;
         console.log("decryptedText:", decryptedText);

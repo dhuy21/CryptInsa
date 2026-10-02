@@ -6,6 +6,7 @@ from collections import Counter
 import string
 from cryptage.cesar import *
 from cryptage.vigenere import *
+from cryptage.decrypt import freq_francais
 import json
 import threading
 from pathlib import Path
@@ -109,6 +110,11 @@ def route_vigenere_decrypt():
     response = {"decrypted": result}
     # Retourne une réponse standardisée
     return jsonify(response)
+
+
+@app.route('/french-frequencies', methods=['GET'])
+def french_frequencies():
+    return jsonify(freq_francais)
 
 
 def call_substitution_attack():

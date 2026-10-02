@@ -96,3 +96,13 @@ async function startAttack(cipherText) { // Recuperer le texte chiffré et l'env
 }
 window.updateAttack = updateAttack;
 window.startAttack = startAttack;
+
+async function frenchFrequencies() {
+    const apiUrl = window.CONFIG ? window.CONFIG.API_URL : "http://localhost:5000";
+    const res = await fetch(`${apiUrl}/french-frequencies`);
+    if (!res.ok) {
+        throw new Error('Impossible de lire les fréquences françaises');
+    }
+    return res.json();
+}
+window.frenchFrequencies = frenchFrequencies;

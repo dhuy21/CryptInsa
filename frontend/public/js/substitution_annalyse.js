@@ -13,8 +13,12 @@ let analyzedText = '';
 document.addEventListener('DOMContentLoaded', async function() {
     setupEventListeners();
     loadCipherTextFromStorage();
-    FRENCH_FREQUENCIES = await window.frenchFrequencies();
-    initializeFrenchChart();
+    try {
+        FRENCH_FREQUENCIES = await window.frenchFrequencies();
+        initializeFrenchChart();
+    } catch (error) {
+        console.error('Erreur lors du chargement des fréquences françaises:', error);
+    }
 });
 
 // ===== INITIALISATION ===== //

@@ -35,6 +35,9 @@ function setupEventListeners() {
 
 //==PLAY==//
 let attackInterval = null;
+const ATTACK_POLL_MS = 3000;
+const ATTACK_POLL_LIMIT = 20;
+let attackPollCount = 0;
 
 function attackIsFinal(steps) {
     return Array.isArray(steps)
@@ -99,6 +102,7 @@ async function play() {
     startElectricityAnimation();
     startLoadingParticles();
     is_finished = false;
+    attackPollCount = 0;
     if (attackInterval) {
         clearInterval(attackInterval);
         attackInterval = null;
@@ -110,14 +114,19 @@ async function play() {
             return;
         }
         attackInterval = setInterval(async () => {
+            attackPollCount += 1;
             try {
                 await refreshAttack();
+                if (!is_finished && attackPollCount >= ATTACK_POLL_LIMIT) {
+                    showNotification('Erreur lors de l\'analyse', 'error');
+                    finishPlay();
+                }
             } catch (error) {
                 console.error('Erreur lors de la mise à jour:', error);
                 showNotification('Erreur lors de l\'analyse', 'error');
                 finishPlay();
             }
-        }, 3000);
+        }, ATTACK_POLL_MS);
     } catch (error) {
         console.error('Erreur lors du démarrage de l\'attaque:', error);
         showNotification('Erreur lors du démarrage de l\'analyse', 'error');

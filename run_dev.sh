@@ -14,31 +14,27 @@ open_browser() {
   fi
 }
 
-# Créer un venv si besoin
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+  echo "Node.js ou npm est absent. Installez-les, puis relancez ce script :"
+  echo "sudo apt-get install -y nodejs npm"
+  exit 1
+fi
+
+# Créer un venv si besoin. Ne pas installer de paquet système depuis ce script.
 if [ ! -d "venv" ]; then
   echo "Creation de l'environnement virtuel..."
-  if ! python3 -m venv venv 2>/dev/null; then
-    echo "Installation du module venv..."
-    sudo apt update && sudo apt install -y python3-venv
-    python3 -m venv venv || { echo "Echec de creation du venv"; USE_GLOBAL=true; }
+  if ! python3 -m venv venv; then
+    echo "Le module venv est absent. Installez-le, puis relancez ce script :"
+    echo "sudo apt update && sudo apt install -y python3-venv"
+    exit 1
   fi
 fi
 
-# Activer le venv si disponible
-if [ "$USE_GLOBAL" != "true" ]; then
-  source venv/bin/activate || { echo "Impossible d'activer le venv"; exit 1; }
-fi
+source venv/bin/activate || { echo "Impossible d'activer le venv"; exit 1; }
 
-# Installer les dépendances du backend
-if [ "$USE_GLOBAL" = "true" ]; then
-  echo "Installation des dependances Python (GLOBAL)..."
-  pip3 install -r backend/requirements.txt --user
-else
-  echo "Installation des dependances Python (VENV)..."
-  pip install -r backend/requirements.txt
-fi
+echo "Installation des dependances Python (VENV)..."
+pip install -r backend/requirements.txt
 
-# Lancer le backend Flask
 echo "Demarrage du serveur Flask..."
 cd backend || exit
 export FLASK_APP=app.py
@@ -47,29 +43,22 @@ flask run > ../flask.log 2>&1 &
 FLASK_PID=$!
 cd ..
 
-#Installer le Node.js
-sudo apt-get install nodejs
-sudo apt-get install npm
-
-# Installer les dépendances npm du frontend
 echo "Installation des dependances npm..."
-cd frontend || exit
+cd frontend || { kill "$FLASK_PID" 2>/dev/null; exit 1; }
 
-# Vérifier si package.json existe
 if [ ! -f "package.json" ]; then
   echo "Erreur: package.json introuvable dans le dossier frontend"
+  kill "$FLASK_PID" 2>/dev/null
   exit 1
 fi
 
-# Installer les dépendances si node_modules n'existe pas ou si package.json est plus récent
 if [ ! -d "node_modules" ] || [ "package.json" -nt "node_modules" ]; then
   echo "Installation/mise à jour des packages npm..."
-  npm install || { echo "Echec de l'installation npm"; exit 1; }
+  npm install || { echo "Echec de l'installation npm"; kill "$FLASK_PID" 2>/dev/null; exit 1; }
 else
   echo "Les packages npm sont déjà installés et à jour."
 fi
 
-# Lancer le serveur Node.js/Express
 echo "Demarrage du serveur Express sur http://127.0.0.1:8000 ..."
 echo ""
 echo "POUR UTILISER NODEMON DE MANIERE INTERACTIVE :"
@@ -83,13 +72,10 @@ npm run dev > ../frontend.log 2>&1 &
 HTTP_PID=$!
 cd ..
 
-# Petite pause pour laisser les serveurs démarrer
 sleep 2
 
-# Ouvrir le site dans le navigateur par défaut
 open_browser "http://127.0.0.1:8000"
 
-# Gestion du Ctrl+C
 echo "=== SERVEURS DEMARRES ==="
 echo "Frontend (Express + nodemon): http://127.0.0.1:8000"
 echo "Backend (Flask): http://127.0.0.1:5000"

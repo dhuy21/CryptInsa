@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+tests/
+conftest.py
+pyproject.toml
+requirements-dev.txt
+test.py
+cryptage/dict_patterns.json
+cryptage/miserables.pdf
+cryptage/dict_search.py
+cryptage/script_pattern.py
+*.log
+.pytest_cache/

@@ -1,13 +1,5 @@
 <a name="readme-top"></a>
 
-<!-- PROJECT BADGES -->
-<div align="center">
-  
-[![Live Demo](https://img.shields.io/badge/Demo-Live-success?style=for-the-badge&logo=render&logoColor=white)](https://cryptinsa-app.onrender.com/)
-[![Deployment](https://img.shields.io/badge/Deployed%20on-Render-brightgreen?style=for-the-badge&logo=render)](https://cryptinsa-app.onrender.com/)
-
-</div>
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -15,8 +7,6 @@
   <p align="center">
     Application pédagogique expliquant le chiffrement par substitution et son attaque par analyse de fréquences.
     <br />
-    <a href="https://cryptinsa-app.onrender.com/"><strong>🚀 Demo Live »</strong></a>
-    ·
     <a href="https://github.com/TedBarbier/ProjetApplicationMediationScientifiqueCryptographie/"><strong>📖 Documentation »</strong></a>
     <br />
     <br />
@@ -85,15 +75,12 @@ Le script :
 *    Lance le serveur Flask sur http://127.0.0.1:5000 (uniquement présent pour faire le liens avec le serveur web)
 *    lance le serveur web sur [http://localhost:8000](http://localhost:8000)
 
-### 🌐 Démo en ligne
-**Testez directement :** [https://cryptinsa-app.onrender.com/](https://cryptinsa-app.onrender.com/)
-
-> ⏳ **Note :** Le serveur peut prendre 30-60 secondes à démarrer lors de la première visite (Render free tier "cold start")
+### 🌐 Hébergement
+Il n'y a plus de démo publique. L'hébergement sera choisi quand la forme de l'application sera fixée.
 
 ### ⚠️ Important
-- **🌐 Demo Live** : [cryptinsa-app.onrender.com](https://cryptinsa-app.onrender.com/) (Render free tier - démarrage lent)
-- **🐳 Docker** : Pour l'hébergement web (production)
-- **💻 Local** : Pour tester en local, exécutez `./run_dev.sh`
+- **🐳 Docker** : deux images séparées, `backend/Dockerfile` et `frontend/Dockerfile`
+- **💻 Local** : `./run_dev.sh` lance Flask sur http://127.0.0.1:5000 et le site sur http://localhost:8000
 ## Roadmap
 - [x] Implémentation de l’API Flask
 - [x] Création d'une interface graphique simple pour tester
@@ -105,7 +92,7 @@ Le script :
 - [x] Explication substitution aléatoire (FRONTEND)
 - [x] Démonstration attaque par fréquence (BACKEND)
 - [x] Démonstration attaque par fréquence (FRONTEND)
-- [x] Hosting le web sur Render ( https://render.com/) par le  fichier Docker ( lien de web: https://cryptinsa-app.onrender.com/)
+- [ ] Hébergement public, après la forme finale de l'application
 <!-- CONTACT -->
 ## Contact
 [Ted BARBIER] - [LinkedIn](https://www.linkedin.com/in/ted-barbier) - [Email](mailto:[ted.barbier@insa-cvl.fr])

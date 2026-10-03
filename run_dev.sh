@@ -35,51 +35,42 @@ source venv/bin/activate || { echo "Impossible d'activer le venv"; exit 1; }
 echo "Installation des dependances Python (VENV)..."
 pip install -r backend/requirements.txt
 
-echo "Demarrage du serveur Flask..."
+echo "Demarrage du serveur Django..."
 cd backend || exit
-export FLASK_APP=app.py
-export FLASK_ENV=development
-flask run > ../flask.log 2>&1 &
-FLASK_PID=$!
+python manage.py runserver 127.0.0.1:5000 > ../backend.log 2>&1 &
+BACKEND_PID=$!
 cd ..
 
 echo "Installation des dependances npm..."
-cd frontend || { kill "$FLASK_PID" 2>/dev/null; exit 1; }
+cd frontend-react || { kill "$BACKEND_PID" 2>/dev/null; exit 1; }
 
 if [ ! -f "package.json" ]; then
-  echo "Erreur: package.json introuvable dans le dossier frontend"
-  kill "$FLASK_PID" 2>/dev/null
+  echo "Erreur: package.json introuvable dans le dossier frontend-react"
+  kill "$BACKEND_PID" 2>/dev/null
   exit 1
 fi
 
 if [ ! -d "node_modules" ] || [ "package.json" -nt "node_modules" ]; then
   echo "Installation/mise à jour des packages npm..."
-  npm install || { echo "Echec de l'installation npm"; kill "$FLASK_PID" 2>/dev/null; exit 1; }
+  npm install || { echo "Echec de l'installation npm"; kill "$BACKEND_PID" 2>/dev/null; exit 1; }
 else
   echo "Les packages npm sont déjà installés et à jour."
 fi
 
-echo "Demarrage du serveur Express sur http://127.0.0.1:8000 ..."
-echo ""
-echo "POUR UTILISER NODEMON DE MANIERE INTERACTIVE :"
-echo "1. Ouvrez un nouveau terminal"
-echo "2. Executez: cd frontend && npm run dev"
-echo "3. Utilisez 'rs' pour redemarrer le serveur"
-echo ""
-echo "POUR L'INSTANT: Demarrage en arriere-plan..."
+echo "Demarrage du site React sur http://127.0.0.1:5173 ..."
 
-npm run dev > ../frontend.log 2>&1 &
+npm run dev -- --host 127.0.0.1 --port 5173 > ../frontend-react.log 2>&1 &
 HTTP_PID=$!
 cd ..
 
 sleep 2
 
-open_browser "http://127.0.0.1:8000"
+open_browser "http://127.0.0.1:5173"
 
 echo "=== SERVEURS DEMARRES ==="
-echo "Frontend (Express + nodemon): http://127.0.0.1:8000"
-echo "Backend (Flask): http://127.0.0.1:5000"
+echo "Site (React): http://127.0.0.1:5173"
+echo "Backend (Django): http://127.0.0.1:5000"
 echo "=== Appuyez sur Ctrl+C pour arreter les serveurs ==="
 
-trap "echo 'Arret des serveurs...'; kill $FLASK_PID $HTTP_PID 2>/dev/null" SIGINT
+trap "echo 'Arret des serveurs...'; kill $BACKEND_PID $HTTP_PID 2>/dev/null" SIGINT
 wait

@@ -52,11 +52,9 @@ Cette approche pédagogique est pensée pour la médiation scientifique, dans un
 ### Technos utilisées
 
 * ![Python][python.com]
-* ![Flask][flask.com]
-* ![ExpressJs][expressjs.com]
-* ![JavaScript][js.com]
-* ![HTML5][html.com]
-* ![CSS3][css.com]
+* ![Django][django.com]
+* ![React][react.com]
+* ![TypeScript][ts.com]
 
 ---
 
@@ -72,23 +70,21 @@ Le script :
 
 *    Crée un environnement virtuel
 *    Installe les dépendances depuis requirements.txt
-*    Lance le serveur Flask sur http://127.0.0.1:5000 (uniquement présent pour faire le liens avec le serveur web)
-*    lance le serveur web sur [http://localhost:8000](http://localhost:8000)
+*    Lance le serveur Django sur http://127.0.0.1:5000
+*    lance le site React sur http://127.0.0.1:5173
 
 ### 🌐 Hébergement
 Il n'y a plus de démo publique. L'hébergement sera choisi quand la forme de l'application sera fixée.
 
 ### ⚠️ Important
-- **🐳 Docker** : deux images séparées, `backend/Dockerfile` et `frontend/Dockerfile`
-- **💻 Local** : `./run_dev.sh` lance Flask sur http://127.0.0.1:5000 et le site sur http://localhost:8000
+- **🐳 Docker** : `backend/Dockerfile` là API Django. `frontend-react/Dockerfile` là site React, cổng 8000. `/api` được chuyển tới `API_INTERNAL_URL`, mặc định `http://127.0.0.1:5000`.
+- **💻 Local** : `./run_dev.sh` lance Django sur http://127.0.0.1:5000 et le site React sur http://127.0.0.1:5173
 ## Roadmap
-- [x] Implémentation de l’API Flask
+- [x] Implémentation de l’API Django
 - [x] Création d'une interface graphique simple pour tester
 - [x] Lancement par script automatisé
 - [x] Explication code cesar (BACKEND)
 - [x] Explication code cesar (FRONTEND)
-- [ ] Explication code vigenere (BACKEND)
-- [ ] Explication code vigenere (FRONTEND)
 - [x] Explication substitution aléatoire (FRONTEND)
 - [x] Démonstration attaque par fréquence (BACKEND)
 - [x] Démonstration attaque par fréquence (FRONTEND)
@@ -111,7 +107,7 @@ Il n'y a plus de démo publique. L'hébergement sera choisi quand la forme de l'
 ## Acknowledgments
 Ce projet a été réalisé dans un cadre pédagogique avec le soutien de notre encadrant Xavier Bultel. Nous remercions également les plateformes et ressources open-source suivantes qui ont facilité notre développement :
 * [Python](https://www.python.org/)
-* [Flask](https://flask.palletsprojects.com/)
+* [Django](https://www.djangoproject.com/)
 * [Wikipedia](https://fr.wikipedia.org/wiki/Analyse_de_fr%C3%A9quence) – pour les bases théoriques de la cryptanalyse
 
 
@@ -119,11 +115,9 @@ Ce projet a été réalisé dans un cadre pédagogique avec le soutien de notre 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [python.com]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
-[flask.com]: https://img.shields.io/badge/flask-black?style=for-the-badge&logo=flask&logoColor=white
-[expressjs.com]: https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB
-[js.com]: https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black
-[html.com]: https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white
-[css.com]: https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white
+[django.com]: https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white
+[react.com]: https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB
+[ts.com]: https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white
 
 
 

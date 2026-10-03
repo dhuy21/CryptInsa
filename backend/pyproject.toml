@@ -1,6 +1,7 @@
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+DJANGO_SETTINGS_MODULE = "config.settings"
 addopts = "-p no:cacheprovider --strict-markers"
 markers = [
     "slow: full substitution attack, several seconds per case",

@@ -1,0 +1,34 @@
+server {
+    listen ${PORT};
+    listen [::]:${PORT};
+    server_name _;
+
+    # PORT is 80 in Compose, published on the host as 8000.
+    # Railway sets PORT and sends the public domain to that same port.
+    absolute_redirect off;
+
+    # Compress at the edge. Upstream responses are proxied, so gzip_proxied is required.
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_min_length 1024;
+    gzip_types text/css application/javascript application/json image/svg+xml text/plain;
+
+    # Docker Compose sets 127.0.0.11 and ipv6=off.
+    # Railway sets [fd12::10] and ipv6=on. Names are resolved per request.
+    resolver ${NGINX_RESOLVER} ipv6=${NGINX_RESOLVER_IPV6} valid=${NGINX_RESOLVER_VALID};
+
+    location /api/ {
+        set $backend_upstream ${BACKEND_UPSTREAM};
+        # Django routes live at /, so /api/cesar must arrive as /cesar.
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass http://$backend_upstream;
+        include /etc/nginx/proxy_params;
+    }
+
+    location / {
+        set $frontend_upstream ${FRONTEND_UPSTREAM};
+        proxy_pass http://$frontend_upstream;
+        include /etc/nginx/proxy_params;
+    }
+}

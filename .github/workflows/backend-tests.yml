@@ -1,4 +1,4 @@
-name: Backend tests
+name: CI
 
 on:
   push:
@@ -33,3 +33,16 @@ jobs:
       - name: Run tests
         working-directory: backend
         run: python -m pytest
+
+  compose-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build and start the three services
+        run: docker compose up -d --build
+      - name: Call the public routes
+        run: bash scripts/ci-smoke.sh
+      - name: Stop the stack
+        if: always()
+        run: docker compose down --remove-orphans

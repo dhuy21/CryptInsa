@@ -77,8 +77,8 @@ Le script :
 Il n'y a plus de démo publique. L'hébergement sera choisi quand la forme de l'application sera fixée.
 
 ### ⚠️ Important
-- **🐳 Docker** : `backend/Dockerfile` là API Django. `frontend-react/Dockerfile` là site React, cổng 8000. `/api` được chuyển tới `API_INTERNAL_URL`, mặc định `http://127.0.0.1:5000`.
-- **💻 Local** : `./run_dev.sh` lance Django sur http://127.0.0.1:5000 et le site React sur http://127.0.0.1:5173
+- **🐳 Docker** : `docker compose up` tại thư mục dự án. Chỉ proxy Nginx mở cổng 8000. `/` đi tới container frontend, `/api` được cắt tiền tố rồi đi tới Django. Frontend và backend không mở cổng ra máy host.
+- **💻 Local** : `./run_dev.sh` lance Django sur http://127.0.0.1:5000 et le site React sur http://127.0.0.1:5173. Le navigateur appelle `/api` ; Vite transmet ces requêtes à Django.
 ## Roadmap
 - [x] Implémentation de l’API Django
 - [x] Création d'une interface graphique simple pour tester

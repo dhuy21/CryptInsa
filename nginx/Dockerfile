@@ -1,0 +1,14 @@
+FROM nginx:1.28-alpine
+
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY proxy_params /etc/nginx/proxy_params
+
+ENV PORT=80 \
+    FRONTEND_UPSTREAM=frontend:8000 \
+    BACKEND_UPSTREAM=backend:5000 \
+    NGINX_RESOLVER=127.0.0.11 \
+    NGINX_RESOLVER_IPV6=off \
+    NGINX_RESOLVER_VALID=10s \
+    NGINX_ENVSUBST_FILTER=^(PORT|FRONTEND_UPSTREAM|BACKEND_UPSTREAM|NGINX_RESOLVER|NGINX_RESOLVER_IPV6|NGINX_RESOLVER_VALID)$
+
+EXPOSE 80

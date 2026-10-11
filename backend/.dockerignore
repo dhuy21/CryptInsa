@@ -5,6 +5,7 @@ __pycache__/
 tests/
 conftest.py
 pyproject.toml
+config/test_settings.py
 requirements-dev.txt
 test.py
 cryptage/dict_patterns.json

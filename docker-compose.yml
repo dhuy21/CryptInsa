@@ -46,6 +46,8 @@ services:
   backend:
     build: ./backend
     image: cryptinsa-backend:muc6
+    environment:
+      DJANGO_SECRET_KEY: cryptinsa-dev-only
     expose:
       - "5000"
     healthcheck:

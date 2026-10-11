@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   smoke:
-    if: github.event.deployment.environment == 'staging' && github.event.deployment_status.state == 'success'
+    if: github.event.deployment.environment == 'CryptInsa / staging' && github.event.deployment_status.state == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:

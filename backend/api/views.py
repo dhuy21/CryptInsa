@@ -29,7 +29,7 @@ def analyze_frequencies(text):
 def health_check(request):
     return JsonResponse({
         "status": "healthy",
-        "service": "flask-backend",
+        "service": "backend",
         "message": "CryptInsa Backend API is running",
     })
 

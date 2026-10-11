@@ -1,4 +1,4 @@
-name: Staging smoke
+name: Deploy smoke
 
 on:
   deployment_status:
@@ -9,14 +9,17 @@ permissions:
 
 jobs:
   smoke:
-    if: github.event.deployment.environment == 'CryptInsa / staging' && github.event.deployment_status.state == 'success'
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      (github.event.deployment.environment == 'CryptInsa / staging' ||
+       github.event.deployment.environment == 'CryptInsa / production')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.deployment.sha }}
-      - name: Call the public staging routes
+      - name: Call the public routes
         env:
-          BASE_URL: https://proxy-staging-47ec.up.railway.app
+          BASE_URL: ${{ github.event.deployment.environment == 'CryptInsa / production' && 'https://proxy-production-0881.up.railway.app' || 'https://proxy-staging-47ec.up.railway.app' }}
         run: bash scripts/ci-smoke.sh

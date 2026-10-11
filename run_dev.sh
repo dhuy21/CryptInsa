@@ -37,6 +37,7 @@ pip install -r backend/requirements.txt
 
 echo "Demarrage du serveur Django..."
 cd backend || exit
+export DJANGO_SECRET_KEY="${DJANGO_SECRET_KEY:-cryptinsa-dev-only}"
 python manage.py runserver 127.0.0.1:5000 > ../backend.log 2>&1 &
 BACKEND_PID=$!
 cd ..

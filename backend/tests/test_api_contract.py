@@ -37,7 +37,7 @@ def client():
 def test_health_routes(client):
     expected = {
         "status": "healthy",
-        "service": "flask-backend",
+        "service": "backend",
         "message": "CryptInsa Backend API is running",
     }
     for path in ("/", "/health"):

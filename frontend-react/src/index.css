@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+}
+
+button.dot,
+button.back-to-top {
+  border: 0;
+  padding: 0;
+}
+
+.cesar-page .section-title {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+}
+
+.frequency-analysis-container .section-title,
+.mapping-container .section-title {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  width: auto;
+}

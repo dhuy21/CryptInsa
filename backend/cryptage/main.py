@@ -1,32 +1,16 @@
 import cryptage.decrypt as decrypt
 import cryptage.mapping as mapping
-import json
-import os
 
-chemin_dictionnaire = "cryptage/dict.txt"
-json_file = "cryptage/donnees.json"
 
-def save_to_json(mot_chiffre, mot_traduit, dictionnaire):
-    data = {
+def append_step(steps, mot_chiffre, mot_traduit, dictionnaire):
+    steps.append({
         "mot_chiffre": mot_chiffre,
         "mot_traduit": mot_traduit,
-        "dictionnaire": dictionnaire.copy()
-    }
-    # Créer le fichier s'il n'existe pas
-    if not os.path.exists(json_file):
-        with open(json_file, 'w') as f:
-            json.dump([], f)
+        "dictionnaire": dictionnaire.copy(),
+    })
 
-    # Ajouter au fichier
-    with open(json_file, 'r+') as f:
-        contenu = json.load(f)
-        contenu.append(data)
-        f.seek(0)
-        json.dump(contenu, f, indent=2)
-
-def etape1(message):
-    with open(json_file, 'w') as f:
-        json.dump([], f)
+def etape1(message, steps):
+    steps.clear()
     print("start 1")
     traduction = {}
     _, traduction = decrypt.decrypt_message(message)
@@ -46,11 +30,11 @@ def etape1(message):
         traduction_sur[ponctuation['virgule']]=","
 
     #Étape 1 : Enregistrement initial
-    save_to_json(mot_chiffre="initial", mot_traduit="initial", dictionnaire=traduction_sur)
+    append_step(steps, "initial", "initial", traduction_sur)
 
     return traduction, traduction_sur, message_split, ponctuation
 
-def etape2(message,traduction,traduction_sur,message_split,ponctuation):
+def etape2(message, traduction, traduction_sur, message_split, ponctuation, steps):
     print("start 2")
     traduction_test=traduction_sur.copy()
     for j in range(10):
@@ -102,7 +86,7 @@ def etape2(message,traduction,traduction_sur,message_split,ponctuation):
                 traduction_sur = decrypt.change_traduction_with_word(traduction_sur, mot, mot_traduit)
                 if traduction_sur_ref != traduction_sur:
                     # Sauvegarde pour un mot trouvé
-                    save_to_json(mot_chiffre=mot, mot_traduit=mot_traduit, dictionnaire=traduction_sur)
+                    append_step(steps, mot, mot_traduit, traduction_sur)
             elif taille > 1:
                 lettre_en_commun = decrypt.lettre_en_commun(mots_correspondants)
                 if lettre_en_commun:
@@ -111,7 +95,7 @@ def etape2(message,traduction,traduction_sur,message_split,ponctuation):
                         traduction_sur = decrypt.change_traduction_with_letter(traduction_sur, mot[lettre[1]], lettre[0])
                     if traduction_sur_ref != traduction_sur:
                         # Sauvegarde même s’il n’y a pas de mot unique
-                        save_to_json(mot_chiffre=mot, mot_traduit=None, dictionnaire=traduction_sur)
+                        append_step(steps, mot, None, traduction_sur)
     message_clair=decrypt.message_from_key(message,traduction)
     liste_mots=message_clair.split(" ")
     print("traduction sur 2", traduction_sur)
@@ -121,5 +105,5 @@ def etape2(message,traduction,traduction_sur,message_split,ponctuation):
             liste_mots[i]=nouveau_mot
     separateur=" "
     nouveau_message=separateur.join(liste_mots)
-    save_to_json("final", "final", traduction)
+    append_step(steps, "final", "final", traduction)
     return traduction

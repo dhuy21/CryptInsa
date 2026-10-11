@@ -1,17 +1,20 @@
+import json
+from pathlib import Path
+
 import cryptage.frequences_lettres as freq
 import string
 
-# Fréquence des lettres en français (environ)
-miserable = freq.extract_text_from_pdf("cryptage/miserables.pdf")
+FREQ_PATH = Path(__file__).resolve().parent / "reference_frequencies.json"
 
-freq_francais = freq.get_letter_frequencies(miserable)
 
-freq_combination_francais = freq.get_combination_frequencies(miserable)
+def load_freq_francais(path=None):
+    if path is None:
+        path = FREQ_PATH
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    return payload["letter_frequencies"]
 
-combinaisons= freq.get_combination_frequencies(miserable)
-combinaison_frequentes = {k: v for k, v in combinaisons.items() if v > 0.8}
 
-N_ITERATIONS=50
+freq_francais = load_freq_francais()
 
 alphabet = string.ascii_lowercase + ' ' + ',' + '.'
 
@@ -171,7 +174,3 @@ def check_mot(mot, dico_par_longueur):
                     #     return meilleur_mot
                         
     return meilleur_mot
-
-
-pdf_path = "cryptage/miserables.pdf"
-text = freq.extract_text_from_pdf(pdf_path)

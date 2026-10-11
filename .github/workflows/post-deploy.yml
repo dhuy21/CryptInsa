@@ -1,0 +1,22 @@
+name: Staging smoke
+
+on:
+  deployment_status:
+    states: [success]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.event.deployment.environment == 'staging' && github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.deployment.sha }}
+      - name: Call the public staging routes
+        env:
+          BASE_URL: https://proxy-staging-47ec.up.railway.app
+        run: bash scripts/ci-smoke.sh

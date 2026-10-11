@@ -14,14 +14,14 @@ export default defineRailway((ctx) => {
     healthcheck: "/health",
     healthcheckTimeout: 300,
     replicas: { "europe-west4-drams3a": 1 },
-    env: { DJANGO_SECRET_KEY: preserve(), PORT: preserve() },
+    env: { DJANGO_SECRET_KEY: preserve(), PORT: "5000" },
   });
   const frontend = service("frontend", {
     source: github("dhuy21/CryptInsa", { branch, checkSuites: true, rootDirectory: "/frontend-react" }),
     healthcheck: "/",
     healthcheckTimeout: 300,
     replicas: { "europe-west4-drams3a": 1 },
-    env: { PORT: preserve() },
+    env: { PORT: "8000" },
   });
   const proxy = service("proxy", {
     source: github("dhuy21/CryptInsa", { branch, checkSuites: true, rootDirectory: "/nginx" }),
@@ -29,12 +29,12 @@ export default defineRailway((ctx) => {
     healthcheckTimeout: 300,
     replicas: { "europe-west4-drams3a": 1 },
     env: {
-      BACKEND_UPSTREAM: preserve(),
-      FRONTEND_UPSTREAM: preserve(),
-      NGINX_RESOLVER: preserve(),
-      NGINX_RESOLVER_IPV6: preserve(),
-      NGINX_RESOLVER_VALID: preserve(),
-      PORT: preserve(),
+      BACKEND_UPSTREAM: "backend.railway.internal:5000",
+      FRONTEND_UPSTREAM: "frontend.railway.internal:8000",
+      NGINX_RESOLVER: "[fd12::10]",
+      NGINX_RESOLVER_IPV6: "on",
+      NGINX_RESOLVER_VALID: "1s",
+      PORT: "80",
     },
   });
 

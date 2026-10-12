@@ -1,10 +1,16 @@
 /* ===== PAGE ABOUT US - STYLES SPÉCIFIQUES ===== */
 
-/* Container global */
-.container {
+/* Container global — scoped to About sections */
+.project-section .container,
+.team-section .container,
+.values-section .container,
+.cta-section .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 /* ===== HERO SECTION ===== */
@@ -64,24 +70,35 @@
 }
 
 /* ===== SECTIONS COMMUNES ===== */
-.section-header {
+.hero-about ~ section .section-header,
+.project-section .section-header,
+.team-section .section-header,
+.values-section .section-header,
+.cta-section .section-header {
+    display: block;
     text-align: center;
     margin-bottom: 4rem;
 }
 
-.section-title {
+.project-section .section-title,
+.team-section .section-title,
+.values-section .section-title {
     font-size: 2.5rem;
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--text-primary);
 }
 
-.section-title i {
+.project-section .section-title i,
+.team-section .section-title i,
+.values-section .section-title i {
     color: var(--primary-color);
     margin-right: 0.5rem;
 }
 
-.section-subtitle {
+.project-section .section-subtitle,
+.team-section .section-subtitle,
+.values-section .section-subtitle {
     font-size: 1.1rem;
     color: var(--text-secondary);
     font-weight: 400;
@@ -222,9 +239,9 @@
 
 .team-slideshow {
     max-width: 800px;
+    width: 100%;
     margin: 0 auto;
     position: relative;
-
 }
 
 .slideshow-container {
@@ -232,6 +249,7 @@
     border-radius: var(--border-radius);
     font-size: 12px !important;
     overflow: hidden;
+    width: 100%;
 }
 
 .slides-wrapper {
@@ -288,9 +306,11 @@
     pointer-events: none;
 }
 
-.nav-btn {
+.team-slideshow .nav-btn {
     width: 50px;
     height: 50px;
+    min-width: 50px;
+    padding: 0;
     background: rgba(0, 255, 136, 0.1);
     border: 2px solid var(--primary-color);
     border-radius: 50%;
@@ -303,17 +323,23 @@
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(10px);
+    box-shadow: none;
+    text-decoration: none;
 }
 
-.nav-btn:hover {
+.team-slideshow .nav-btn:hover {
     background: var(--primary-color);
     color: var(--bg-dark);
     transform: scale(1.1);
     box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
 }
 
-.nav-btn:active {
+.team-slideshow .nav-btn:active {
     transform: scale(0.95);
+}
+
+.team-slideshow .nav-btn i {
+    margin: 0;
 }
 
 /* Dots Indicator */
@@ -961,9 +987,10 @@
         height: 45px;
     }
     
-    .nav-btn {
+    .team-slideshow .nav-btn {
         width: 45px;
         height: 45px;
+        min-width: 45px;
         font-size: 1rem;
     }
     

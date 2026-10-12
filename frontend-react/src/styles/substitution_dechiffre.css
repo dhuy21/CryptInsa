@@ -289,7 +289,7 @@
     letter-spacing: 0.5px;
 }
 
-.letters-container {
+.mapping-container .letters-container {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -376,7 +376,7 @@
     box-shadow: 0 4px 12px rgba(0, 255, 136, 0.1);
 }
 
-.letters-container {
+.mapping-container .letters-container {
     display: flex;
     flex-wrap: wrap;
     gap: 0.8rem;

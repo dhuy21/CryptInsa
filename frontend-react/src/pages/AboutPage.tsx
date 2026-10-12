@@ -1,13 +1,18 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import TeamSlideshow from "../components/TeamSlideshow";
-import { features, members, values } from "../aboutContent";
+import { useLanguage } from "../i18n/LanguageContext";
+import { aboutText } from "../i18n/aboutText";
 import "../styles/main.css";
 import "../styles/about_us.css";
 
 export default function AboutPage() {
+  const { lang } = useLanguage();
+  const text = aboutText[lang];
+
   useEffect(() => {
-    document.title = "À propos de nous";
-  }, []);
+    document.title = text.pageTitle;
+  }, [text.pageTitle]);
 
   return (
     <main>
@@ -16,12 +21,11 @@ export default function AboutPage() {
           <div className="hero-text">
             <h1 className="hero-title">
               <i className="fas fa-users" />
-              {" "}À propos de nous
-              <span className="subtitle">Équipe CryptInsa</span>
+              {" "}{text.title}
+              <span className="subtitle">{text.subtitle}</span>
             </h1>
             <p className="hero-description">
-              Découvrez notre équipe passionnée de cryptographie et l'histoire derrière CryptInsa,
-              votre plateforme d'analyse cryptographique avancée.
+              {text.lead}
             </p>
           </div>
         </div>
@@ -31,9 +35,9 @@ export default function AboutPage() {
         <div className="container">
           <div className="section-header">
             <h2 className="section-title">
-              <i className="fas fa-project-diagram" /> Notre Projet
+              <i className="fas fa-project-diagram" /> {text.project}
             </h2>
-            <p className="section-subtitle">CryptInsa : Votre allié en cryptanalyse</p>
+            <p className="section-subtitle">{text.projectSubtitle}</p>
           </div>
           <div className="project-content">
             <div className="project-info">
@@ -41,15 +45,13 @@ export default function AboutPage() {
                 <div className="card-icon">
                   <i className="fas fa-shield-alt" />
                 </div>
-                <h3>Mission</h3>
+                <h3>{text.mission}</h3>
                 <p>
-                  CryptInsa est né de notre passion commune pour la cryptographie et la sécurité informatique.
-                  Nous avons créé cette plateforme pour démocratiser l'accès aux outils de cryptanalyse et
-                  permettre à chacun de comprendre les mécanismes de chiffrement.
+                  {text.missionText}
                 </p>
               </div>
               <div className="project-features">
-                {features.map((feature) => (
+                {text.features.map((feature) => (
                   <div className="feature-card" key={feature.title}>
                     <div className="feature-icon">
                       <i className={`fas ${feature.icon}`} />
@@ -68,12 +70,12 @@ export default function AboutPage() {
         <div className="container">
           <div className="section-header">
             <h2 className="section-title">
-              <i className="fas fa-user-friends" /> Notre Équipe
+              <i className="fas fa-user-friends" /> {text.team}
             </h2>
-            <p className="section-subtitle">Les esprits brillants derrière CryptInsa</p>
+            <p className="section-subtitle">{text.teamSubtitle}</p>
           </div>
           <div className="team-slideshow">
-            <TeamSlideshow members={members} />
+            <TeamSlideshow members={text.members} />
           </div>
         </div>
       </section>
@@ -82,12 +84,12 @@ export default function AboutPage() {
         <div className="container">
           <div className="section-header">
             <h2 className="section-title">
-              <i className="fas fa-heart" /> Nos Valeurs
+              <i className="fas fa-heart" /> {text.valuesTitle}
             </h2>
-            <p className="section-subtitle">Ce qui nous guide au quotidien</p>
+            <p className="section-subtitle">{text.valuesSubtitle}</p>
           </div>
           <div className="values-grid">
-            {values.map((value) => (
+            {text.values.map((value) => (
               <div className="value-card" key={value.title}>
                 <div className="value-icon">
                   <i className={`fas ${value.icon}`} />
@@ -103,14 +105,14 @@ export default function AboutPage() {
       <section className="cta-section">
         <div className="container">
           <div className="cta-content">
-            <h2>Rejoignez notre aventure cryptographique</h2>
-            <p>Découvrez nos outils et participez à la communauté CryptInsa</p>
+            <h2>{text.ctaTitle}</h2>
+            <p>{text.ctaText}</p>
             <div className="cta-buttons">
-              <a href="http://127.0.0.1:8000/test" className="btn btn-primary btn-lg">
-                <i className="fas fa-play" /> Essayer nos outils
-              </a>
+              <Link to="/substitution" className="btn btn-primary btn-lg">
+                <i className="fas fa-play" /> {text.tryTools}
+              </Link>
               <a href="#slideshow" className="btn btn-secondary btn-lg">
-                <i className="fas fa-envelope" /> Nous contacter
+                <i className="fas fa-envelope" /> {text.contact}
               </a>
             </div>
           </div>

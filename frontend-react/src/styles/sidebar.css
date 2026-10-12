@@ -47,11 +47,17 @@
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-size: 1.2rem;
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 4px;
     transition: all 0.3s ease;
+}
+
+.sidebar-close svg,
+.sidebar-toggle svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    display: block;
 }
 
 .sidebar-close:hover {
@@ -62,8 +68,6 @@
 .sidebar-content {
     padding: 1rem 0;
     height: calc(100vh - 80px);
-    display: flex;
-    flex-direction: column;
 }
 
 .sidebar-nav {
@@ -157,30 +161,6 @@
     font-size: 0.8rem;
 }
 
-/* Sidebar Footer */
-.sidebar-footer {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border-color);
-    background: var(--bg-darker);
-}
-
-.crypto-info {
-    display: flex;
-    gap: 1rem;
-}
-
-.info-item {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.info-item i {
-    color: var(--primary-color);
-}
-
 /* Sidebar Overlay */
 .sidebar-overlay {
     position: fixed;
@@ -211,8 +191,10 @@
     border: none;
     border-radius: 8px;
     color: var(--bg-dark);
-    font-size: 1.2rem;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 1001;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { TouchEvent } from "react";
 import type { TeamMember } from "../aboutContent";
+import { useLanguage } from "../i18n/LanguageContext";
 
 const AUTOPLAY_MS = 5000;
 
@@ -9,6 +10,7 @@ type TeamSlideshowProps = {
 };
 
 export default function TeamSlideshow({ members }: TeamSlideshowProps) {
+  const { t } = useLanguage();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const count = members.length;
@@ -97,10 +99,10 @@ export default function TeamSlideshow({ members }: TeamSlideshowProps) {
         ))}
       </div>
       <div className="slideshow-nav">
-        <button className="nav-btn prev-btn" type="button" onClick={() => go(index - 1)} aria-label="Précédent">
+        <button className="nav-btn prev-btn" type="button" onClick={() => go(index - 1)} aria-label={t("slide.prev")}>
           <i className="fas fa-chevron-left" />
         </button>
-        <button className="nav-btn next-btn" type="button" onClick={() => go(index + 1)} aria-label="Suivant">
+        <button className="nav-btn next-btn" type="button" onClick={() => go(index + 1)} aria-label={t("slide.next")}>
           <i className="fas fa-chevron-right" />
         </button>
       </div>

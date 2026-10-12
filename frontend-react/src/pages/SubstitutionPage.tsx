@@ -155,8 +155,29 @@ export default function SubstitutionPage() {
                     <i className="fas fa-arrow-right transform-arrow" />
                     <span className="transform-label">Chiffrement</span>
                   </div>
-                  <button type="button" className="btn btn-attack compact" title="minimum 50 caractères" onClick={attack}>
-                    <i className="fas fa-skull" /> Déchiffrer par attaque
+                  <button
+                    type="button"
+                    id="decryptText"
+                    className="btn btn-attack compact attack-button-with-fire"
+                    title="minimum 50 caractères"
+                    onClick={attack}
+                  >
+                    <div className="button-content">
+                      <i className="fas fa-skull" style={{ color: "white", fontSize: "2rem" }} />
+                      <span>Déchiffrer par attaque</span>
+                    </div>
+                    <div className="fire fire-1">
+                      <div className="fire-left"><div className="main-fire" /><div className="particle-fire" /></div>
+                      <div className="fire-center"><div className="main-fire" /><div className="particle-fire" /></div>
+                      <div className="fire-right"><div className="main-fire" /><div className="particle-fire" /></div>
+                      <div className="fire-bottom"><div className="main-fire" /></div>
+                    </div>
+                    <div className="fire fire-2">
+                      <div className="fire-left"><div className="main-fire" /><div className="particle-fire" /></div>
+                      <div className="fire-center"><div className="main-fire" /><div className="particle-fire" /></div>
+                      <div className="fire-right"><div className="main-fire" /><div className="particle-fire" /></div>
+                      <div className="fire-bottom"><div className="main-fire" /></div>
+                    </div>
                   </button>
                 </div>
                 <div className="text-output-area">

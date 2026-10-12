@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useLanguage } from "../i18n/LanguageContext";
 
 function toolActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}_`);
@@ -7,6 +8,7 @@ function toolActive(pathname: string, href: string): boolean {
 
 export default function SiteSidebar() {
   const location = useLocation();
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(() => toolActive(location.pathname, "/substitution") || location.pathname === "/cesar");
 
@@ -40,8 +42,10 @@ export default function SiteSidebar() {
             <i className="fas fa-shield-alt" />
             <span className="sidebar-title">CryptInsa</span>
           </div>
-          <button className="sidebar-close" id="sidebarClose" type="button" aria-label="Fermer" onClick={() => setOpen(false)}>
-            <i className="fas fa-times" />
+          <button className="sidebar-close" id="sidebarClose" type="button" aria-label={t("side.close")} onClick={() => setOpen(false)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M6.2 5.2 5.2 6.2 10.9 12l-5.7 5.8 1 1L12 13.1l5.8 5.7 1-1L13.1 12l5.7-5.8-1-1L12 10.9 6.2 5.2z" />
+            </svg>
           </button>
         </div>
         <div className="sidebar-content">
@@ -50,13 +54,13 @@ export default function SiteSidebar() {
               <li className="menu-item">
                 <NavLink to="/" end className={({ isActive }) => `menu-link${isActive ? " active" : ""}`}>
                   <i className="fas fa-home" />
-                  <span>Accueil</span>
+                  <span>{t("side.home")}</span>
                 </NavLink>
               </li>
               <li className="menu-item">
                 <NavLink to="/about_us" className={({ isActive }) => `menu-link${isActive ? " active" : ""}`}>
                   <i className="fas fa-users" />
-                  <span>Notre Équipe</span>
+                  <span>{t("side.team")}</span>
                 </NavLink>
               </li>
               <li className={`menu-item has-submenu${toolsOpen ? " open" : ""}`}>
@@ -65,20 +69,20 @@ export default function SiteSidebar() {
                   setToolsOpen((current) => !current);
                 }}>
                   <i className="fas fa-tools" />
-                  <span>Outils Crypto</span>
+                  <span>{t("side.tools")}</span>
                   <i className="fas fa-chevron-down submenu-arrow" />
                 </a>
                 <ul className="submenu">
                   <li>
                     <NavLink to="/cesar" className={() => `submenu-link${location.pathname === "/cesar" ? " active" : ""}`}>
                       <i className="fas fa-key" />
-                      Chiffre César
+                      {t("side.cesar")}
                     </NavLink>
                   </li>
                   <li>
                     <NavLink to="/substitution" className={() => `submenu-link${toolActive(location.pathname, "/substitution") ? " active" : ""}`}>
                       <i className="fas fa-exchange-alt" />
-                      Substitution
+                      {t("side.substitution")}
                     </NavLink>
                   </li>
                 </ul>
@@ -86,28 +90,31 @@ export default function SiteSidebar() {
               <li className="menu-item">
                 <NavLink to="/help" className={({ isActive }) => `menu-link${isActive ? " active" : ""}`}>
                   <i className="fas fa-question-circle" />
-                  <span>Aide</span>
+                  <span>{t("side.help")}</span>
                 </NavLink>
               </li>
             </ul>
           </nav>
-          <div className="sidebar-footer">
-            <div className="crypto-info">
-              <div className="info-item">
-                <i className="fas fa-shield-check" />
-                <span>Sécurisé</span>
-              </div>
-              <div className="info-item">
-                <i className="fas fa-graduation-cap" />
-                <span>Éducatif</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div className={`sidebar-overlay${open ? " active" : ""}`} id="sidebarOverlay" onClick={() => setOpen(false)} />
-      <button className="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Ouvrir le menu" onClick={() => setOpen(true)}>
-        <i className="fas fa-bars" />
+      <button
+        className="sidebar-toggle"
+        id="sidebarToggle"
+        type="button"
+        aria-expanded={open}
+        aria-label={open ? t("side.close") : t("side.open")}
+        onClick={() => setOpen((current) => !current)}
+      >
+        {open ? (
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M6.2 5.2 5.2 6.2 10.9 12l-5.7 5.8 1 1L12 13.1l5.8 5.7 1-1L13.1 12l5.7-5.8-1-1L12 10.9 6.2 5.2z" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z" />
+          </svg>
+        )}
       </button>
     </>
   );

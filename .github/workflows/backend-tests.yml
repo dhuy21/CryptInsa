@@ -34,6 +34,23 @@ jobs:
         working-directory: backend
         run: python -m pytest
 
+  frontend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend-react/package-lock.json
+      - name: Install dependencies
+        working-directory: frontend-react
+        run: npm ci
+      - name: Run tests
+        working-directory: frontend-react
+        run: npm test
+
   compose-smoke:
     runs-on: ubuntu-24.04
     timeout-minutes: 30

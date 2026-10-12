@@ -1,3 +1,8 @@
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
 server {
     listen ${PORT};
     listen [::]:${PORT};
@@ -29,6 +34,8 @@ server {
     location / {
         set $frontend_upstream ${FRONTEND_UPSTREAM};
         proxy_pass http://$frontend_upstream;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
         include /etc/nginx/proxy_params;
     }
 }

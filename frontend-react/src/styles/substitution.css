@@ -29,7 +29,7 @@
     justify-content: center;
 }
 
-.container {
+.substitution-page .container {
     max-width: 2000px;
     margin: 0 auto;
     padding: 0 1.5rem;
@@ -63,8 +63,9 @@
     background: linear-gradient(120deg, rgb(121, 63, 246), rgb(112, 240, 187));
 }
 /* === GRID PRINCIPAL 2 RANGÉES === */
-.main-grid {
+.substitution-page .main-grid {
     display: grid;
+    grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     gap: 1.2rem;
     height: calc(100vh - 5rem);
@@ -75,7 +76,7 @@
 }
 
 /* === RANGÉE 1: TABLE DE SUBSTITUTION === */
-.substitution-section {
+.substitution-page .substitution-section {
     background: var(--light-bg);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-card);
@@ -87,7 +88,7 @@
     min-height: 0;
 }
 
-.section-header {
+.substitution-page .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -96,7 +97,7 @@
     gap: 1rem;
 }
 
-.section-header h3 {
+.substitution-page .section-header h3 {
     margin: 0;
     font-size: 1.6rem;
     color: var(--accent-color);
@@ -156,19 +157,20 @@
 }
 
 /* === TABLE HORIZONTALE === */
-.horizontal-table {
+.substitution-page .horizontal-table {
     background: rgba(255, 255, 255, 0.95);
     border-radius: var(--border-radius);
     padding: 1rem 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     width: 100%;
     box-sizing: border-box;
 }
 
-.table-row {
+.substitution-page .table-row {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -186,9 +188,9 @@
     flex-shrink: 0;
 }
 
-.letters-container,
-.arrows-container,
-.inputs-container {
+.substitution-page .letters-container,
+.substitution-page .arrows-container,
+.substitution-page .inputs-container {
     display: flex;
     gap: 0.3rem;
     flex-wrap: nowrap;
@@ -199,8 +201,8 @@
     width: 100%;
 }
 
-/* Lettres originales */
-.original-letter {
+/* Lettres originales — scoped (évite d'écraser l'indicateur César) */
+.substitution-page .original-letter {
     background: linear-gradient(135deg, #e8f4fd, #c3e9ff);
     color: var(--dark-text);
     padding: 0.4rem;
@@ -218,9 +220,8 @@
     align-items: center;
     justify-content: center;
 }
-/* Style conditionnel pour .original-letter */
-/* Ajoutez une classe supplémentaire selon la condition dans votre JS/HTML, par exemple .highlighted */
-.original-letter.highlighted {
+
+.substitution-page .original-letter.highlighted {
     background: linear-gradient(135deg, #ffd700, #ffeaa7);
     color: #b26500;
     border-color: var(--accent-color);
@@ -340,9 +341,10 @@
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
-.input-actions,
-.output-actions {
+.substitution-page .input-actions,
+.substitution-page .output-actions {
     display: flex;
+    flex-direction: row;
     gap: 0.6rem;
     margin-top: 1rem;
     align-items: center;
@@ -393,7 +395,7 @@
     background: none;
 }
 
-.transform-arrow {
+.substitution-page .transform-arrow {
     font-size: 2.5rem;
     color: var(--accent-color);
     background: none;
@@ -539,12 +541,12 @@
         gap: 1.5rem;
     }
     
-    .container {
+    .substitution-page .container {
         max-width: 1600px;
     }
     
     /* Réduire légèrement les tailles sur écrans moyens */
-    .original-letter,
+    .substitution-page .original-letter,
     .substitution-input,
     .mapping-arrow {
         min-width: 30px;
@@ -553,7 +555,7 @@
         font-size: 0.95rem;
     }
     
-    .original-letter,
+    .substitution-page .original-letter,
     .substitution-input,
     .mapping-arrow {
         height: 30px;
@@ -570,7 +572,8 @@
         margin: 0 -1.5rem;
     }
     
-    .main-grid {
+    .substitution-page .main-grid {
+        grid-template-columns: 1fr;
         grid-template-rows: auto auto;
         height: auto;
     }
@@ -595,7 +598,7 @@
         margin: 0 -1rem;
     }
     
-    .section-header {
+    .substitution-page .section-header {
         flex-direction: column;
         align-items: stretch;
     }
@@ -640,7 +643,7 @@
         max-width: 28px;
     }
     
-    .original-letter {
+    .substitution-page .original-letter {
         min-width: 24px;
         width: 24px;
         height: 24px;
@@ -660,7 +663,7 @@
         font-size: 2rem;
     }
     
-    .container {
+    .substitution-page .container {
         padding: 0 1rem;
     }
 }

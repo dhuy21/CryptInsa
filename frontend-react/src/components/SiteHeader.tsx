@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useLanguage } from "../i18n/LanguageContext";
+import type { Lang, MessageKey } from "../i18n/messages";
 
-const LINKS = [
-  { to: "/", label: "Accueil", icon: "fas fa-chart-bar", end: true },
-  { to: "/about_us", label: "A propos de nous", icon: "fas fa-info-circle", end: false },
-  { to: "/help", label: "Aide", icon: "fas fa-question-circle", end: false },
+const LINKS: { to: string; label: MessageKey; icon: string; end: boolean }[] = [
+  { to: "/", label: "nav.home", icon: "fas fa-chart-bar", end: true },
+  { to: "/about_us", label: "nav.about", icon: "fas fa-info-circle", end: false },
+  { to: "/help", label: "nav.help", icon: "fas fa-question-circle", end: false },
 ];
 
 export default function SiteHeader() {
   const location = useLocation();
+  const { lang, setLang, t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -62,11 +65,16 @@ export default function SiteHeader() {
         <div className="nav-container">
           <div className="nav-brand">
             <div className="brand-logos">
-              <i className="fas fa-lock crypto-icon" />
+              <svg className="crypto-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M12 1.75a5.25 5.25 0 0 0-5.25 5.25v2.25H6a2.25 2.25 0 0 0-2.25 2.25v8.25A2.25 2.25 0 0 0 6 22.25h12a2.25 2.25 0 0 0 2.25-2.25V11.5A2.25 2.25 0 0 0 18 9.25h-.75V7A5.25 5.25 0 0 0 12 1.75zm-3.75 7.5V7a3.75 3.75 0 0 1 7.5 0v2.25h-7.5z"
+                />
+              </svg>
             </div>
             <div className="brand-text">
               <h1 className="brand-title">CryptInsa</h1>
-              <span className="brand-subtitle">Cryptanalyse</span>
+              <span className="brand-subtitle">{t("brand.subtitle")}</span>
             </div>
           </div>
           <div className={`nav-menu${menuOpen ? " active" : ""}`} id="navMenu">
@@ -83,26 +91,40 @@ export default function SiteHeader() {
                       }
                     }}
                   >
-                    <i className={link.icon} /> {link.label}
+                    <i className={link.icon} /> {t(link.label)}
                   </NavLink>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="insa-logo-container">
-            <img src="/images/logo_insa.png" alt="Logo INSA" className="insa-logo" />
+          <div className="nav-tools">
+            <div className="lang-switch" role="group" aria-label={t("lang.switch")}>
+              {(["fr", "en"] as Lang[]).map((code) => (
+                <button
+                  key={code}
+                  type="button"
+                  aria-pressed={lang === code}
+                  onClick={() => setLang(code)}
+                >
+                  {t(code === "fr" ? "lang.fr" : "lang.en")}
+                </button>
+              ))}
+            </div>
+            <button
+              className={`nav-toggle${menuOpen ? " active" : ""}`}
+              id="navToggle"
+              type="button"
+              aria-label={t("nav.menu")}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <span className="toggle-line" />
+              <span className="toggle-line" />
+              <span className="toggle-line" />
+            </button>
+            <div className="insa-logo-container">
+              <img src="/images/logo_insa.png" alt={t("nav.logo")} className="insa-logo" />
+            </div>
           </div>
-          <button
-            className={`nav-toggle${menuOpen ? " active" : ""}`}
-            id="navToggle"
-            type="button"
-            aria-label="Menu"
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            <span className="toggle-line" />
-            <span className="toggle-line" />
-            <span className="toggle-line" />
-          </button>
         </div>
         <div className="header-decoration">
           <div className="binary-stream">

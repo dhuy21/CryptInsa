@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export default function SiteFooter() {
+  const { t } = useLanguage();
   const year = new Date().getFullYear();
   const particles = useMemo(() => Array.from({ length: 20 }, (_, index) => ({
     id: index,
@@ -25,40 +28,37 @@ export default function SiteFooter() {
           <div className="footer-section">
             <div className="footer-brand">
               <i className="fas fa-shield-alt footer-icon" />
-              <h3>Projet d'application-Cryptanalyse</h3>
-              <p>Analyse de fréquence avancée pour la recherche et l'éducation en cryptographie.</p>
+              <h3>{t("footer.title")}</h3>
+              <p>{t("footer.lead")}</p>
             </div>
           </div>
           <div className="footer-section">
-            <h4><i className="fas fa-tools" /> Tools</h4>
+            <h4><i className="fas fa-tools" /> {t("footer.tools")}</h4>
             <ul>
-              <li><a href="#frequency">Analyse de fréquence</a></li>
-              <li><a href="#cipher">Outils de chiffrement</a></li>
-              <li><a href="#statistics">Statistiques</a></li>
-              <li><a href="#patterns">Détection de motifs</a></li>
+              <li><Link to="/cesar">{t("footer.cesar")}</Link></li>
+              <li><Link to="/substitution">{t("footer.substitution")}</Link></li>
             </ul>
           </div>
           <div className="footer-section">
-            <h4><i className="fas fa-book" /> Resources</h4>
+            <h4><i className="fas fa-book" /> {t("footer.resources")}</h4>
             <ul>
-              <li><a href="#documentation">Documentation</a></li>
-              <li><a href="#tutorials">Tutoriels</a></li>
-              <li><a href="#examples">Exemples</a></li>
+              <li><Link to="/help">{t("footer.help")}</Link></li>
+              <li><Link to="/about_us">{t("footer.about")}</Link></li>
             </ul>
           </div>
           <div className="footer-section">
-            <h4><i className="fas fa-code" /> Developer</h4>
+            <h4><i className="fas fa-code" /> {t("footer.developer")}</h4>
             <ul>
-              <li><a href="https://github.com/TedBarbier/CryptInsa"><i className="fab fa-github" /> GitHub</a></li>
+              <li><a href="https://github.com/dhuy21/CryptInsa"><i className="fab fa-github" /> GitHub</a></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
           <div className="footer-copyright">
-            <p>&copy; {year} Cryptanalyse. Deployées par <i className="fas fa-heart pulse" /> pour les amateurs de cryptographie.</p>
+            <p>&copy; {year} {t("footer.brand")} {t("footer.deployed")} <i className="fas fa-heart pulse" /> {t("footer.audience")}</p>
             <div className="security-badge">
               <i className="fas fa-lock" />
-              <span>Secure & Open Source</span>
+              <span>{t("footer.secure")}</span>
             </div>
             <i className="fas fa-shield-alt footer-icon" />
           </div>

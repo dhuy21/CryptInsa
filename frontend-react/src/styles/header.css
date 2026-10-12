@@ -15,13 +15,13 @@
 }
 
 .nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem 2rem;
+    width: 100%;
+    margin: 0;
+    padding: 0.75rem 1.25rem 0.75rem 4.75rem;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 /* ===== BRANDING ===== */
@@ -44,35 +44,51 @@
     gap: 0.2rem;
 }
 
-/* ===== LOGO INSA CONTAINER ===== */
-.insa-logo-container {
-    width: 100%;
+.nav-tools {
     display: flex;
     align-items: center;
-    position: relative;
-    left: 100px;
-    z-index: 10;
+    gap: 1.5rem;
+}
+
+.lang-switch {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.lang-switch button {
+    background: transparent;
+    color: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 4px;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.lang-switch button[aria-pressed="true"] {
+    border-color: #00ff88;
+    color: #00ff88;
+}
+
+/* ===== LOGO INSA CONTAINER ===== */
+.insa-logo-container {
+    display: flex;
+    align-items: center;
 }
 
 /* ===== LOGO INSA ===== */
 .insa-logo {
-    height: 50px;
-    width: 500%;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    filter: brightness(1.1) contrast(1.1);
-    box-shadow: 0 0 20px rgba(4, 76, 47, 0.3);
-    border: 3px solid rgba(9, 96, 55, 0.4);
-    background: rgb(146, 198, 185);
-    scale: 1.5;
+    height: 48px;
+    width: auto;
+    max-width: 148px;
+    border-radius: 8px;
     object-fit: contain;
-    padding: 4px;
+    background: #fff;
+    padding: 2px;
 }
 
 .insa-logo:hover {
-    transform: scale(1.08) rotate(3deg);
-    box-shadow: 0 0 35px rgba(0, 255, 136, 0.6);
-    border-color: rgba(0, 255, 136, 0.8);
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.45);
 }
 
 @keyframes logo-glow {
@@ -87,9 +103,11 @@
 }
 
 .crypto-icon {
-    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
     color: #00ff88;
-    animation: pulse-glow 2s infinite;
+    display: block;
+    flex: 0 0 auto;
 }
 
 @keyframes pulse-glow {
@@ -117,13 +135,12 @@
     color: #00ff88;
     opacity: 0.8;
     font-style: italic;
-    margin-left: 0.5rem;
 }
 
 /* ===== NAVIGATION ===== */
 .nav-menu {
     display: flex;
-    justify-content: right;
+    justify-content: center;
 }
 
 .nav-links {
@@ -247,16 +264,23 @@
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .nav-container {
-        padding: 1rem;
-        grid-template-columns: auto 1fr;
-        gap: 1rem;
+        padding: 0.75rem 1rem 0.75rem 4.25rem;
+        grid-template-columns: 1fr auto;
+        gap: 0.75rem;
     }
     
+    .nav-brand {
+        grid-column: 1;
+    }
+
+    .nav-tools {
+        grid-column: 2;
+    }
+
     .nav-toggle {
         display: flex;
         position: static;
         transform: none;
-        order: 3;
     }
     
     .nav-menu {
@@ -299,15 +323,8 @@
     }
     
     .insa-logo {
-        height: 45px;
-        width: 45px;
-    }
-    
-    .insa-logo-container {
-        order: 2;
-        justify-content: flex-end;
-        position: static;
-        transform: none;
+        height: 40px;
+        max-width: 110px;
     }
     
     .brand-logos {

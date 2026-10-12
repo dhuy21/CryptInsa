@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SiteShell from "./components/SiteShell";
+import { LanguageProvider } from "./i18n/LanguageContext";
 import AboutPage from "./pages/AboutPage";
 import CesarPage from "./pages/CesarPage";
 import HelpPage from "./pages/HelpPage";
@@ -12,6 +13,7 @@ import SubstitutionPage from "./pages/SubstitutionPage";
 export default function App() {
   return (
     <BrowserRouter>
+      <LanguageProvider>
       <SiteShell>
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -24,6 +26,7 @@ export default function App() {
         <Route path="/substitution_dechiffre" element={<SubstitutionDecryptPage />} />
       </Routes>
       </SiteShell>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }

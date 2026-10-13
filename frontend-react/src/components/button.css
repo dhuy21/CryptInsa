@@ -1,0 +1,110 @@
+.app-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 10px;
+    padding: 17px 40px;
+    border: 0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    line-height: 1.2;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.app-btn-sm {
+    padding: 15px 30px;
+    font-size: 14px;
+}
+
+.app-btn-lg {
+    padding: 17px 40px;
+    font-size: 15px;
+}
+
+.app-btn-primary {
+    background: linear-gradient(135deg, #00ff88, #00cc6a);
+    color: #0a0a15;
+    box-shadow: rgb(0, 140, 70) 0 10px 0 0;
+}
+
+.app-btn-secondary {
+    background: transparent;
+    color: #00ff88;
+    border: 2px solid #00ff88;
+    box-shadow: rgb(0, 140, 70) 0 10px 0 0;
+}
+
+.app-btn-neutral {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    box-shadow: rgb(55, 65, 70) 0 10px 0 0;
+}
+
+.app-btn-generate {
+    background: linear-gradient(135deg, #e17055, #fdcb6e);
+    box-shadow: rgb(205, 97, 68) 0 10px 0 0;
+}
+
+.app-btn-key {
+    background: linear-gradient(135deg, #89f8f0, #764ba2);
+    box-shadow: rgb(83, 149, 204) 0 10px 0 0;
+}
+
+.app-btn-success {
+    background: linear-gradient(135deg, #00b894, #00a085);
+    box-shadow: rgb(0, 138, 109) 0 10px 0 0;
+}
+
+.app-btn-aqua {
+    background: linear-gradient(135deg, #00ff88, #00bfff);
+    color: #0a0a0a;
+    box-shadow: rgb(0, 140, 120) 0 10px 0 0;
+}
+
+.app-btn-mint {
+    background: linear-gradient(135deg, #00ff88, #00d4aa);
+    border: 2px solid #00b377;
+    box-shadow: rgb(0, 163, 102) 0 10px 0 0;
+}
+
+.app-btn:hover {
+    transform: translateY(3px);
+}
+
+.app-btn-primary:hover { box-shadow: rgb(0, 140, 70) 0 7px 0 0; }
+.app-btn-secondary:hover {
+    box-shadow: rgb(0, 140, 70) 0 7px 0 0;
+}
+.app-btn-neutral:hover { box-shadow: rgb(55, 65, 70) 0 7px 0 0; }
+.app-btn-generate:hover { box-shadow: rgb(205, 97, 68) 0 7px 0 0; }
+.app-btn-key:hover { box-shadow: rgb(83, 149, 204) 0 7px 0 0; }
+.app-btn-success:hover { box-shadow: rgb(0, 138, 109) 0 7px 0 0; }
+.app-btn-aqua:hover { box-shadow: rgb(0, 140, 120) 0 7px 0 0; }
+.app-btn-mint:hover { box-shadow: rgb(0, 163, 102) 0 7px 0 0; }
+
+.app-btn:active {
+    transform: translateY(10px);
+    transition: 200ms;
+}
+
+.app-btn-primary:active { box-shadow: rgb(0, 140, 70) 0 0 0 0; }
+.app-btn-secondary:active { box-shadow: rgb(0, 140, 70) 0 0 0 0; }
+.app-btn-neutral:active { box-shadow: rgb(55, 65, 70) 0 0 0 0; }
+.app-btn-generate:active { box-shadow: rgb(205, 97, 68) 0 0 0 0; }
+.app-btn-key:active { box-shadow: rgb(83, 149, 204) 0 0 0 0; }
+.app-btn-success:active { box-shadow: rgb(0, 138, 109) 0 0 0 0; }
+.app-btn-aqua:active { box-shadow: rgb(0, 140, 120) 0 0 0 0; }
+.app-btn-mint:active { box-shadow: rgb(0, 163, 102) 0 0 0 0; }
+
+.app-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}

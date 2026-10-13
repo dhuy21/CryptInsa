@@ -39,7 +39,7 @@ describe("decrypt language", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "EN" }));
 
-    expect(screen.getByText("Cryptanalysis")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Help" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Déchiffrement par attaque" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Texte Chiffré Original:" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Texte en Clair Original:" })).toBeInTheDocument();

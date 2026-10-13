@@ -37,7 +37,7 @@ describe("Substitution language", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "EN" }));
 
-    expect(screen.getByText("Cryptanalysis")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Help" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Chiffrement par Substitution" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Table de Substitution" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Aléatoire" })).toBeInTheDocument();

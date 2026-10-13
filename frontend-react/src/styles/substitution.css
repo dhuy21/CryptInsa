@@ -317,15 +317,16 @@
     color: var(--accent-color);
 }
 
-.text-input-area textarea,
-.text-output-area textarea {
+.substitution-page .text-input-area textarea,
+.substitution-page .text-output-area textarea {
     flex: 1;
     width: 100%;
     padding: 1.2rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: var(--border-radius);
     background: rgba(255, 255, 255, 0.95);
-    color: var(--dark-text);
+    color: #1a1a1a;
+    caret-color: #1a1a1a;
     font-family: 'Courier New', monospace;
     font-size: 1.1rem;
     resize: none;
@@ -334,11 +335,20 @@
     line-height: 1.4;
 }
 
-.text-input-area textarea:focus,
-.text-output-area textarea:focus {
+.substitution-page .text-input-area textarea::placeholder,
+.substitution-page .text-output-area textarea::placeholder {
+    color: #666;
+    opacity: 1;
+}
+
+.substitution-page .text-input-area textarea:focus,
+.substitution-page .text-output-area textarea:focus {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    /* Keep light field + dark text; attack CSS otherwise paints a dark focus bg. */
+    background: rgba(255, 255, 255, 0.98);
+    color: #1a1a1a;
 }
 
 .substitution-page .input-actions,

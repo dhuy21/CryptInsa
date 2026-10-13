@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import Button from "../components/Button";
 import {
   EXAMPLE_TEXTS,
   SUBSTITUTION_ALPHABET,
@@ -66,18 +67,18 @@ export default function SubstitutionPage() {
               <div className="section-header">
                 <h3>Table de Substitution</h3>
                 <div className="table-controls">
-                  <button type="button" className="btn btn-generate" onClick={() => setMapping(randomMapping())}>
+                  <Button variant="generate" size="sm" onClick={() => setMapping(randomMapping())}>
                     <i className="fas fa-dice" /> Aléatoire
-                  </button>
-                  <button type="button" className="key-btn compact" onClick={() => setMapping(identityMapping())}>
+                  </Button>
+                  <Button variant="key" size="sm" onClick={() => setMapping(identityMapping())}>
                     <i className="fas fa-equals" /> Identité
-                  </button>
-                  <button type="button" className="key-btn compact" onClick={() => setMapping(reverseMapping())}>
+                  </Button>
+                  <Button variant="key" size="sm" onClick={() => setMapping(reverseMapping())}>
                     <i className="fas fa-exchange-alt" /> Inversé
-                  </button>
-                  <button type="button" className="key-btn compact" onClick={() => setMapping(atbashMapping())}>
+                  </Button>
+                  <Button variant="key" size="sm" onClick={() => setMapping(atbashMapping())}>
                     <i className="fas fa-mirror" /> Atbash
-                  </button>
+                  </Button>
                 </div>
               </div>
               <div className="table-content">
@@ -129,25 +130,25 @@ export default function SubstitutionPage() {
                     onChange={(event) => setInput(event.target.value)}
                   />
                   <div className="input-actions">
-                    <button type="button" className="btn btn-secondary compact" onClick={() => setInput("")}>
+                    <Button variant="neutral" size="sm" onClick={() => setInput("")}>
                       <i className="fas fa-eraser" /> Effacer
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-secondary compact"
+                    </Button>
+                    <Button
+                      variant="neutral"
+                      size="sm"
                       onClick={() => {
                         navigator.clipboard.readText().then(setInput).catch(() => undefined);
                       }}
                     >
                       <i className="fas fa-paste" /> Coller
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-secondary compact"
+                    </Button>
+                    <Button
+                      variant="neutral"
+                      size="sm"
                       onClick={() => setInput(EXAMPLE_TEXTS[Math.floor(Math.random() * EXAMPLE_TEXTS.length)])}
                     >
                       <i className="fas fa-file-alt" /> Exemple
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <div className="transform-area">
@@ -184,9 +185,9 @@ export default function SubstitutionPage() {
                   <h3>Texte chiffré</h3>
                   <textarea rows={5} readOnly value={output} />
                   <div className="output-actions">
-                    <button
-                      type="button"
-                      className="btn btn-success compact"
+                    <Button
+                      variant="success"
+                      size="sm"
                       onClick={() => {
                         if (output) {
                           navigator.clipboard.writeText(output).catch(() => undefined);
@@ -194,7 +195,7 @@ export default function SubstitutionPage() {
                       }}
                     >
                       <i className="fas fa-clipboard" /> Copier
-                    </button>
+                    </Button>
                     <div className="stats">
                       <span>{normalized.length}</span> caractères → <span>{output.length}</span> caractères
                     </div>

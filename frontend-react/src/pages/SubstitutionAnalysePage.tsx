@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
 import { frenchFrequencies } from "../api/frequencies";
 import {
   calculateFrequencies,
@@ -12,8 +13,6 @@ import {
 } from "../substitutionAnalyse";
 import "../styles/main.css";
 import "../styles/substitution_annalyse.css";
-
-const ARROW_PATH = "M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z";
 
 type NoticeType = "success" | "error" | "info";
 
@@ -38,21 +37,6 @@ type Match = {
   french: string;
   confidence: number;
 };
-
-function ArrowButton({ id, icon, label, onClick }: { id: string; icon: string; label: string; onClick: () => void }) {
-  return (
-    <button id={id} className="btn btn-primary" type="button" onClick={onClick}>
-      <svg xmlns="http://www.w3.org/2000/svg" className="arr-2" viewBox="0 0 24 24">
-        <path d={ARROW_PATH} />
-      </svg>
-      <span className="text"><i className={icon} /> {label}</span>
-      <span className="circle" />
-      <svg xmlns="http://www.w3.org/2000/svg" className="arr-1" viewBox="0 0 24 24">
-        <path d={ARROW_PATH} />
-      </svg>
-    </button>
-  );
-}
 
 function FrequencyBars({
   bars,
@@ -253,12 +237,9 @@ export default function SubstitutionAnalysePage() {
                 : <span className="placeholder-text">En attente du texte chiffré...</span>}
             </div>
             <div className="control-buttons">
-              <ArrowButton
-                id="refreshAnalysis"
-                icon="fas fa-sync-alt"
-                label="Actualiser"
-                onClick={() => analyze(readStoredCipher(), french)}
-              />
+              <Button id="refreshAnalysis" variant="aqua" size="sm" onClick={() => analyze(readStoredCipher(), french)}>
+                <i className="fas fa-sync-alt" /> Actualiser
+              </Button>
             </div>
           </div>
           <div className="french-comparison-column">
@@ -308,18 +289,15 @@ export default function SubstitutionAnalysePage() {
               </div>
             </div>
             <div className="next-step-btn">
-              <ArrowButton
-                id="nextStep"
-                icon="fas fa-angle-right"
-                label="Étape suivante"
-                onClick={() => navigate("/substitution_dechiffre")}
-              />
+              <Button id="nextStep" variant="aqua" size="sm" onClick={() => navigate("/substitution_dechiffre")}>
+                Étape suivante <i className="fas fa-angle-right" />
+              </Button>
             </div>
           </div>
         </div>
       </section>
       {notices.map((notice, index) => (
-        <div key={notice.id} className={`notification ${notice.type}${notice.shown ? " show" : ""}`} style={{ top: 20 + index * 72 }}>
+        <div key={notice.id} className={`notification ${notice.type}${notice.shown ? " show" : ""}`} style={{ top: 88 + index * 72 }}>
           <i className={`fas fa-${notice.type === "success" ? "check" : notice.type === "error" ? "exclamation-triangle" : "info"}`} />
           <span>{notice.message}</span>
         </div>

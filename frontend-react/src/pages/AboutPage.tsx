@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import Button from "../components/Button";
 import TeamSlideshow from "../components/TeamSlideshow";
 import { useLanguage } from "../i18n/LanguageContext";
 import { aboutText } from "../i18n/aboutText";
@@ -108,12 +108,12 @@ export default function AboutPage() {
             <h2>{text.ctaTitle}</h2>
             <p>{text.ctaText}</p>
             <div className="cta-buttons">
-              <Link to="/substitution" className="btn btn-primary btn-lg">
+              <Button to="/substitution" size="lg">
                 <i className="fas fa-play" /> {text.tryTools}
-              </Link>
-              <a href="#slideshow" className="btn btn-secondary btn-lg">
+              </Button>
+              <Button href="#slideshow" variant="secondary" size="lg">
                 <i className="fas fa-envelope" /> {text.contact}
-              </a>
+              </Button>
             </div>
           </div>
         </div>

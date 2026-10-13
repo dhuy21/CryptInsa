@@ -102,12 +102,15 @@
     }
 }
 
-.crypto-icon {
-    width: 2rem;
-    height: 2rem;
-    color: #00ff88;
+.cryptinsa-logo {
+    height: 52px;
+    width: auto;
     display: block;
-    flex: 0 0 auto;
+}
+
+.brand-logo-link {
+    display: flex;
+    line-height: 0;
 }
 
 @keyframes pulse-glow {
@@ -128,13 +131,6 @@
     margin: 0;
     text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
     font-family: 'Courier New', monospace;
-}
-
-.brand-subtitle {
-    font-size: 0.9rem;
-    color: #00ff88;
-    opacity: 0.8;
-    font-style: italic;
 }
 
 /* ===== NAVIGATION ===== */
@@ -163,6 +159,7 @@
     font-weight: 500;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .nav-link::before {
@@ -316,10 +313,6 @@
     
     .brand-title {
         font-size: 1.4rem;
-    }
-    
-    .brand-subtitle {
-        display: none;
     }
     
     .insa-logo {

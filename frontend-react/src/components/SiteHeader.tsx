@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useLanguage } from "../i18n/LanguageContext";
 import type { Lang, MessageKey } from "../i18n/messages";
 
@@ -64,18 +64,11 @@ export default function SiteHeader() {
       <nav className="navbar">
         <div className="nav-container">
           <div className="nav-brand">
-            <div className="brand-logos">
-              <svg className="crypto-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="currentColor"
-                  d="M12 1.75a5.25 5.25 0 0 0-5.25 5.25v2.25H6a2.25 2.25 0 0 0-2.25 2.25v8.25A2.25 2.25 0 0 0 6 22.25h12a2.25 2.25 0 0 0 2.25-2.25V11.5A2.25 2.25 0 0 0 18 9.25h-.75V7A5.25 5.25 0 0 0 12 1.75zm-3.75 7.5V7a3.75 3.75 0 0 1 7.5 0v2.25h-7.5z"
-                />
-              </svg>
-            </div>
-            <div className="brand-text">
-              <h1 className="brand-title">CryptInsa</h1>
-              <span className="brand-subtitle">{t("brand.subtitle")}</span>
-            </div>
+            <h1 className="brand-title">
+              <Link to="/" className="brand-logo-link">
+                <img src="/images/logo_cryptinsa.png" alt="CryptInsa" className="cryptinsa-logo" />
+              </Link>
+            </h1>
           </div>
           <div className={`nav-menu${menuOpen ? " active" : ""}`} id="navMenu">
             <ul className="nav-links">

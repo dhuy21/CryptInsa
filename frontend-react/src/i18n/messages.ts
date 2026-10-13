@@ -1,5 +1,4 @@
 const fr = {
-  "brand.subtitle": "Cryptanalyse",
   "nav.home": "Accueil",
   "nav.about": "A propos de nous",
   "nav.help": "Aide",
@@ -43,7 +42,6 @@ const fr = {
 };
 
 const en: typeof fr = {
-  "brand.subtitle": "Cryptanalysis",
   "nav.home": "Home",
   "nav.about": "About us",
   "nav.help": "Help",

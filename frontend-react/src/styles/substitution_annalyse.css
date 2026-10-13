@@ -717,7 +717,8 @@
     margin-top: 2rem;
 }
 
-.mapping-section {
+/* Scoped — unscoped .mapping-section painted gray cards onto /substitution_dechiffre */
+.frequency-analysis-container .mapping-section {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
@@ -725,7 +726,7 @@
     box-shadow: var(--shadow-card);
 }
 
-.mapping-section h3 {
+.frequency-analysis-container .mapping-section h3 {
     color: var(--text-primary);
     font-size: 1.3rem;
     margin-bottom: 1.5rem;
@@ -963,7 +964,7 @@
         padding: 1rem;
     }
     
-    .mapping-section {
+    .frequency-analysis-container .mapping-section {
         padding: 1rem;
     }
     
@@ -1024,7 +1025,7 @@
 /* ===== NOTIFICATIONS ===== */
 .notification {
     position: fixed;
-    top: 20px;
+    top: 88px;
     right: 20px;
     padding: 1rem 1.5rem;
     background: var(--bg-card);

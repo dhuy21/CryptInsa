@@ -37,7 +37,7 @@ describe("César language", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "EN" }));
 
-    expect(screen.getByText("Cryptanalysis")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Help" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Outil de Chiffrement/Déchiffrement" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Roue de Chiffrement" })).toBeInTheDocument();
     expect(screen.getByText(/Décalage:/)).toBeInTheDocument();

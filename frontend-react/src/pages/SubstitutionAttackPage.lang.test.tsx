@@ -36,7 +36,7 @@ describe("attack language", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "EN" }));
 
-    expect(screen.getByText("Cryptanalysis")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Help" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Attaque par Substitution" })).toBeInTheDocument();
     expect(screen.getByLabelText("Texte Chiffré")).toBeInTheDocument();
     expect(screen.getByText(/Caractères:/)).toBeInTheDocument();

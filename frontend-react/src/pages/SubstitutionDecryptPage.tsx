@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Button from "../components/Button";
 import { readStoredAttackId, updateAttack, type AttackStep } from "../api/attack";
 import { readStoredCipher } from "../substitutionAnalyse";
 import {
@@ -278,115 +279,111 @@ export default function SubstitutionDecryptPage() {
           <h2 className="section-title">
             <i className="fas fa-swords" /> Déchiffrement par attaque
           </h2>
-          <div className="row-2">
-            <div className="mapping-section">
-              <div className="mapping-controls">
-                <button id="play" className="btn btn-primary" type="button" disabled={playing} onClick={play}>
-                  <i className={playing ? "fas fa-spinner fa-spin" : "fas fa-play"} /> {playing ? "Analyse..." : "Commencer"}
-                </button>
-              </div>
-              <div className="alphabet-mapping" id="alphabetMapping">
-                <div className={`energy-dots${energy ? " active" : ""}`} id="energyDots">
-                  <div className="energy-dot energy-dot-1" />
-                  <div className="energy-dot energy-dot-2" />
-                  <div className="energy-dot energy-dot-3" />
-                  <div className="energy-dot energy-dot-4" />
-                </div>
-                <div className="alphabet-row french-alphabet top" id="cipherAlphabet">
-                  {DECRYPT_ALPHABET.map((letter) => (
-                    <div className="alphabet-letter cipher" key={`cipher-${letter}`}>{letter.toUpperCase()}</div>
-                  ))}
-                </div>
-                <div className="arrows-row" id="arrowsRow">
-                  {DECRYPT_ALPHABET.map((letter) => (
-                    <div className="arrow" key={`arrow-${letter}`}>↓</div>
-                  ))}
-                </div>
-                <div className="alphabet-row french-alphabet bottom" id="clearAlphabet">
-                  {DECRYPT_ALPHABET.map((letter) => {
-                    const clear = mapping[letter];
-                    return (
-                      <div className={`alphabet-letter ${clear ? "clear" : "empty"}`} key={`clear-${letter}`}>
-                        {clear ? clear.toUpperCase() : "?"}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="comparison-section">
-                <div className="text-display-row">
-                  <div className="text-display-col">
-                    <h4><i className="fas fa-lock" /> Texte Chiffré Original:</h4>
-                    <textarea id="originalCipherText" rows={4} readOnly placeholder="Le texte chiffré original apparaîtra ici..." value={cipher} />
+          <div className="mapping-controls">
+            <Button id="play" variant="mint" disabled={playing} onClick={play}>
+              <i className={playing ? "fas fa-spinner fa-spin" : "fas fa-play"} /> {playing ? "Analyse..." : "Commencer"}
+            </Button>
+          </div>
+          <div className="alphabet-mapping" id="alphabetMapping">
+            <div className={`energy-dots${energy ? " active" : ""}`} id="energyDots">
+              <div className="energy-dot energy-dot-1" />
+              <div className="energy-dot energy-dot-2" />
+              <div className="energy-dot energy-dot-3" />
+              <div className="energy-dot energy-dot-4" />
+            </div>
+            <div className="alphabet-row french-alphabet top" id="cipherAlphabet">
+              {DECRYPT_ALPHABET.map((letter) => (
+                <div className="alphabet-letter cipher" key={`cipher-${letter}`}>{letter.toUpperCase()}</div>
+              ))}
+            </div>
+            <div className="arrows-row" id="arrowsRow">
+              {DECRYPT_ALPHABET.map((letter) => (
+                <div className="arrow" key={`arrow-${letter}`}>↓</div>
+              ))}
+            </div>
+            <div className="alphabet-row french-alphabet bottom" id="clearAlphabet">
+              {DECRYPT_ALPHABET.map((letter) => {
+                const clear = mapping[letter];
+                return (
+                  <div className={`alphabet-letter ${clear ? "clear" : "empty"}`} key={`clear-${letter}`}>
+                    {clear ? clear.toUpperCase() : "?"}
                   </div>
-                  <div className="text-display-col">
-                    <h4><i className="fas fa-unlock" /> Texte en Clair Original:</h4>
-                    <textarea id="originalPlainText" rows={4} readOnly placeholder="Le texte en clair original apparaîtra ici (si disponible)..." value={plain} />
-                  </div>
-                </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="comparison-section">
+            <div className="text-display-row">
+              <div className="text-display-col">
+                <h4><i className="fas fa-lock" /> Texte Chiffré Original:</h4>
+                <textarea id="originalCipherText" rows={4} readOnly placeholder="Le texte chiffré original apparaîtra ici..." value={cipher} />
               </div>
-              <div className="words-section">
-                <div className="text-display-row">
-                  <button id="previousWord" className="btn btn-primary" type="button" onClick={goPrevious}>
-                    <i className="fas fa-arrow-left" />
-                  </button>
-                  <div className="text-display-col">
-                    <h4><i className="fas fa-lock" /> Mot chiffré</h4>
-                    <textarea id="motChiffreText" rows={4} readOnly placeholder="Le mot chiffré apparaîtra ici..." value={motChiffre} />
-                  </div>
-                  <div className="text-display-col">
-                    <h4><i className="fas fa-unlock" /> Mot traduit</h4>
-                    <textarea id="motTraduitText" rows={4} readOnly placeholder="Le mot traduit apparaîtra ici..." value={motTraduit} />
-                  </div>
-                  <button id="nextWord" className="btn btn-primary" type="button" onClick={goNext}>
-                    <i className="fas fa-arrow-right" />
-                  </button>
-                </div>
-              </div>
-              <div className="result-section">
-                <h4><i className="fas fa-magic" /> Texte Déchiffré (Résultat):</h4>
-                <textarea
-                  id="decryptedText"
-                  rows={4}
-                  readOnly
-                  placeholder="Le texte déchiffré apparaîtra ici..."
-                  value=""
-                  style={compared ? { display: "none" } : undefined}
-                />
-                {compared ? (
-                  <>
-                    <div id="coloredDecryptedText" className="colored-text-display">
-                      {compared.map((item, index) => {
-                        const shown = item.char === " " ? "\u00A0" : item.char;
-                        if (item.isCorrect) {
-                          return <span className="char-correct" key={index}>{shown}</span>;
-                        }
-                        if (item.isMissing) {
-                          return <span className="char-missing" key={index}>_</span>;
-                        }
-                        if (item.isExtra) {
-                          return <span className="char-extra" key={index}>{shown}</span>;
-                        }
-                        return <span className="char-incorrect" key={index}>{shown}</span>;
-                      })}
-                    </div>
-                    <div id="comparisonStats" className="comparison-stats">
-                      <div className="stats-content">
-                        <span className="stat-item">
-                          <i className="fas fa-check-circle" /> Précision: <strong>{accuracy}%</strong>
-                        </span>
-                        <span className="stat-item">
-                          <i className="fas fa-chart-bar" /> {correctCount}/{totalCount} caractères corrects
-                        </span>
-                      </div>
-                    </div>
-                  </>
-                ) : null}
-                <button id="copyResult" className="copy-btn" type="button" onClick={copyResult}>
-                  <i className="fas fa-copy" /> Copier
-                </button>
+              <div className="text-display-col">
+                <h4><i className="fas fa-unlock" /> Texte en Clair Original:</h4>
+                <textarea id="originalPlainText" rows={4} readOnly placeholder="Le texte en clair original apparaîtra ici (si disponible)..." value={plain} />
               </div>
             </div>
+          </div>
+          <div className="words-section">
+            <div className="text-display-row">
+              <button id="previousWord" className="btn btn-primary" type="button" onClick={goPrevious}>
+                <i className="fas fa-arrow-left" />
+              </button>
+              <div className="text-display-col">
+                <h4><i className="fas fa-lock" /> Mot chiffré</h4>
+                <textarea id="motChiffreText" rows={4} readOnly placeholder="Le mot chiffré apparaîtra ici..." value={motChiffre} />
+              </div>
+              <div className="text-display-col">
+                <h4><i className="fas fa-unlock" /> Mot traduit</h4>
+                <textarea id="motTraduitText" rows={4} readOnly placeholder="Le mot traduit apparaîtra ici..." value={motTraduit} />
+              </div>
+              <button id="nextWord" className="btn btn-primary" type="button" onClick={goNext}>
+                <i className="fas fa-arrow-right" />
+              </button>
+            </div>
+          </div>
+          <div className="result-section">
+            <h4><i className="fas fa-magic" /> Texte Déchiffré (Résultat):</h4>
+            <textarea
+              id="decryptedText"
+              rows={4}
+              readOnly
+              placeholder="Le texte déchiffré apparaîtra ici..."
+              value=""
+              style={compared ? { display: "none" } : undefined}
+            />
+            {compared ? (
+              <>
+                <div id="coloredDecryptedText" className="colored-text-display">
+                  {compared.map((item, index) => {
+                    const shown = item.char === " " ? "\u00A0" : item.char;
+                    if (item.isCorrect) {
+                      return <span className="char-correct" key={index}>{shown}</span>;
+                    }
+                    if (item.isMissing) {
+                      return <span className="char-missing" key={index}>_</span>;
+                    }
+                    if (item.isExtra) {
+                      return <span className="char-extra" key={index}>{shown}</span>;
+                    }
+                    return <span className="char-incorrect" key={index}>{shown}</span>;
+                  })}
+                </div>
+                <div id="comparisonStats" className="comparison-stats">
+                  <div className="stats-content">
+                    <span className="stat-item">
+                      <i className="fas fa-check-circle" /> Précision: <strong>{accuracy}%</strong>
+                    </span>
+                    <span className="stat-item">
+                      <i className="fas fa-chart-bar" /> {correctCount}/{totalCount} caractères corrects
+                    </span>
+                  </div>
+                </div>
+              </>
+            ) : null}
+            <Button id="copyResult" variant="mint" size="sm" onClick={copyResult}>
+              <i className="fas fa-copy" /> Copier
+            </Button>
           </div>
         </section>
       </div>
@@ -396,7 +393,7 @@ export default function SubstitutionDecryptPage() {
           className={`notification notification-${notice.type}`}
           style={{
             position: "fixed",
-            top: 20 + index * 72,
+            top: 88 + index * 72,
             right: 20,
             background: notice.type === "success"
               ? "linear-gradient(135deg, #00ff88, #00cc6a)"

@@ -40,7 +40,7 @@ describe("analyse language", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "EN" }));
 
-    expect(screen.getByText("Cryptanalysis")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Help" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Analyse de Fréquences" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Fréquences du Texte Chiffré" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Comparaison Française" })).toBeInTheDocument();

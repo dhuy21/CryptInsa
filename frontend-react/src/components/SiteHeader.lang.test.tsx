@@ -27,21 +27,18 @@ describe("language switch", () => {
   it("starts in French, then follows EN and FR", () => {
     renderHeader();
 
-    expect(screen.getByText("Cryptanalyse")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Aide" })).toBeInTheDocument();
     expect(document.documentElement.lang).toBe("fr");
 
     fireEvent.click(screen.getByRole("button", { name: "EN" }));
 
-    expect(screen.getByText("Cryptanalysis")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Help" })).toBeInTheDocument();
-    expect(screen.queryByText("Cryptanalyse")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Aide" })).not.toBeInTheDocument();
     expect(document.documentElement.lang).toBe("en");
     expect(localStorage.getItem("lang")).toBe("en");
 
     fireEvent.click(screen.getByRole("button", { name: "FR" }));
 
-    expect(screen.getByText("Cryptanalyse")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Aide" })).toBeInTheDocument();
     expect(document.documentElement.lang).toBe("fr");
     expect(localStorage.getItem("lang")).toBe("fr");

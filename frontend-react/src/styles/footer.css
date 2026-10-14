@@ -201,7 +201,7 @@
 }
 
 /* ===== PARTICULES D'ARRIÈRE-PLAN ===== */
-.particles-container {
+.crypto-footer .particles-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -211,7 +211,7 @@
     pointer-events: none;
 }
 
-.particles-container::before {
+.crypto-footer .particles-container::before {
     content: '';
     position: absolute;
     top: 0;
@@ -234,7 +234,7 @@
     animation: scan-line 4s infinite;
 }
 
-.particles-container::after {
+.crypto-footer .particles-container::after {
     content: '';
     position: absolute;
     top: 0;

@@ -13,7 +13,7 @@ export default function HomePage() {
   }, [lang, t]);
 
   return (
-    <main>
+    <main className="home-page">
       <section className="hero">
         <div className="hero-content">
           <div className="hero-text">

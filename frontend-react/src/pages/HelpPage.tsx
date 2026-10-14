@@ -118,7 +118,7 @@ export default function HelpPage() {
       </div>
 
       <button
-        className={showTop ? "back-to-top visible" : "back-to-top"}
+        className={showTop ? "back-to-top is-shown" : "back-to-top"}
         type="button"
         aria-label={text.backToTop}
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

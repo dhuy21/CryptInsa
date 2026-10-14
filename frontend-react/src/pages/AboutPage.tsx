@@ -15,7 +15,7 @@ export default function AboutPage() {
   }, [text.pageTitle]);
 
   return (
-    <main>
+    <main className="about-page">
       <section className="hero-about">
         <div className="hero-content">
           <div className="hero-text">

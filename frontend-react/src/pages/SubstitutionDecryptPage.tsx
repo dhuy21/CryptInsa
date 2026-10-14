@@ -268,7 +268,7 @@ export default function SubstitutionDecryptPage() {
   const accuracy = totalCount > 0 ? ((correctCount / totalCount) * 100).toFixed(1) : "0";
 
   return (
-    <>
+    <div className="decrypt-page">
       <div className={`loading-particles-overlay${energy ? " active" : ""}`} id="loadingParticlesOverlay">
         <div className="particles-container">
           {PARTICLES.map((particle) => <div className="particle" key={particle} />)}
@@ -420,6 +420,6 @@ export default function SubstitutionDecryptPage() {
           </div>
         </div>
       ))}
-    </>
+    </div>
   );
 }

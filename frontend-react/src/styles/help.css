@@ -355,7 +355,7 @@
     transform: translateY(20px);
 }
 
-.back-to-top.visible {
+.back-to-top.is-shown {
     opacity: 1;
     transform: translateY(0);
 }

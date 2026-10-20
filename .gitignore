@@ -50,3 +50,8 @@ instance/
 
 
 .Identifier
+
+# Markdown and docs stay local. The project README is the exception.
+*.md
+!/README.md
+docs/

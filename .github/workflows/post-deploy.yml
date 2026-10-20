@@ -21,5 +21,5 @@ jobs:
           ref: ${{ github.event.deployment.sha }}
       - name: Call the public routes
         env:
-          BASE_URL: ${{ github.event.deployment.environment == 'CryptInsa / production' && 'https://proxy-production-0881.up.railway.app' || 'https://proxy-staging-47ec.up.railway.app' }}
+          BASE_URL: ${{ github.event.deployment.environment == 'CryptInsa / production' && 'https://cryptinsa.up.railway.app' || 'https://proxy-staging-47ec.up.railway.app' }}
         run: bash scripts/ci-smoke.sh

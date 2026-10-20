@@ -1,124 +1,73 @@
-<a name="readme-top"></a>
+# CryptInsa
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <h2 align="center">CryptInsa</h2>
-  <p align="center">
-    Application pédagogique expliquant le chiffrement par substitution et son attaque par analyse de fréquences.
-    <br />
-    <a href="https://github.com/TedBarbier/ProjetApplicationMediationScientifiqueCryptographie/"><strong>📖 Documentation »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/TedBarbier/ProjetApplicationMediationScientifiqueCryptographie/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/TedBarbier/ProjetApplicationMediationScientifiqueCryptographie/issues">Request Feature</a>
-  </p>
-</div>
+Interactive web app for learning monoalphabetic substitution and breaking it with French frequency analysis and a dictionary attack.
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table des matières</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">À propos du projet</a>
-      <ul>
-        <li><a href="#built-with">Technos utilisées</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Remerciements</a></li>
-  </ol>
-</details>
+Built as a scientific-mediation project at INSA Centre-Val de Loire, with Xavier Bultel.
 
----
+## What you can do
 
-## À propos du projet
+- Encrypt and decrypt a Caesar cipher on a 29-symbol alphabet (`a–z`, space, comma, period), including an interactive wheel.
+- Build a substitution table (random, identity, reversed, Atbash, or custom) and encrypt a text in the browser.
+- Launch an automatic attack: letter frequencies, space and `e` heuristics, punctuation, then a French dictionary of about 336,000 words.
+- Replay each attack step and compare the result with the original plaintext when it was stored in the browser.
 
-🔐 **CryptInsa** - Un outil interactif pour découvrir la cryptographie par substitution
+The interface is French first. Home, About, and Help also have English. The cipher tools stay in French.
 
-Ce projet propose une application web interactive ayant pour objectif la vulgarisation des principes de la cryptanalyse. L'application permet :
+## Stack
 
-- De comprendre visuellement le fonctionnement du chiffrement par substitution, notamment les codes de César
-- De générer un chiffrement par substitution personnalisé à partir d'un texte librement saisi par l'utilisateur
-- D'observer, étape par étape, comment une attaque automatique par analyse de fréquences peut retrouver le message original à partir de ce texte chiffré
+- React 19, TypeScript, Vite
+- Django (JSON API only, no database models)
+- Nginx in front of both services
+- Docker Compose, GitHub Actions, Railway
 
-Cette approche pédagogique est pensée pour la médiation scientifique, dans un cadre éducatif ou de découverte.
+## Run locally
 
----
+Requirements: Python 3, Node.js, npm.
 
-### Technos utilisées
+```bash
+./run_dev.sh
+```
 
-* ![Python][python.com]
-* ![Django][django.com]
-* ![React][react.com]
-* ![TypeScript][ts.com]
+The script creates `venv/`, installs `backend/requirements.txt`, starts Django on http://127.0.0.1:5000, and the React app on http://127.0.0.1:5173. The browser calls `/api`; Vite forwards those requests to Django and strips the `/api` prefix.
 
----
+## Run with Docker
 
-## Installation
+```bash
+docker compose up --build
+```
 
-Le projet est prêt à être lancé automatiquement via un script Bash.
+Open http://127.0.0.1:8000. Only the Nginx proxy publishes a port. `/` goes to the frontend container. `/api` is stripped and forwarded to Django. Frontend and backend are not exposed on the host.
 
-### 💡 Installation rapide (Linux/macOS/WSL recommandé)
+## API
 
-executez run_dev.sh voilà les serveurs web sont lancés.
+Public paths are prefixed with `/api` (Vite in dev, Nginx in Docker). Django itself serves them without that prefix.
 
-Le script :
+| Method | Path | Role |
+| --- | --- | --- |
+| GET | `/api/health` | Health check |
+| POST | `/api/cesar` | Caesar encrypt (`message`, `shift`) |
+| POST | `/api/cesar/decrypt` | Caesar decrypt |
+| GET | `/api/french-frequencies` | French reference frequencies |
+| POST | `/api/analyze` | Letter-frequency ratios |
+| POST | `/api/start_attack` | Start a substitution attack (`cipherText`) |
+| POST | `/api/update_attack` | Poll attack steps (`attackId`) |
 
-*    Crée un environnement virtuel
-*    Installe les dépendances depuis requirements.txt
-*    Lance le serveur Django sur http://127.0.0.1:5000
-*    lance le site React sur http://127.0.0.1:5173
+Attack state lives in process memory (at most 100 attacks). Plaintext, ciphertext, and the attack id live in the browser `localStorage`.
 
-### 🌐 Hébergement
-Il n'y a plus de démo publique. L'hébergement sera choisi quand la forme de l'application sera fixée.
+## Tests
 
-### ⚠️ Important
-- **🐳 Docker** : `docker compose up` tại thư mục dự án. Chỉ proxy Nginx mở cổng 8000. `/` đi tới container frontend, `/api` được cắt tiền tố rồi đi tới Django. Frontend và backend không mở cổng ra máy host.
-- **💻 Local** : `./run_dev.sh` lance Django sur http://127.0.0.1:5000 et le site React sur http://127.0.0.1:5173. Le navigateur appelle `/api` ; Vite transmet ces requêtes à Django.
-## Roadmap
-- [x] Implémentation de l’API Django
-- [x] Création d'une interface graphique simple pour tester
-- [x] Lancement par script automatisé
-- [x] Explication code cesar (BACKEND)
-- [x] Explication code cesar (FRONTEND)
-- [x] Explication substitution aléatoire (FRONTEND)
-- [x] Démonstration attaque par fréquence (BACKEND)
-- [x] Démonstration attaque par fréquence (FRONTEND)
-- [ ] Hébergement public, après la forme finale de l'application
-<!-- CONTACT -->
-## Contact
-[Ted BARBIER] - [LinkedIn](https://www.linkedin.com/in/ted-barbier) - [Email](mailto:[ted.barbier@insa-cvl.fr])
+```bash
+cd backend && DJANGO_SECRET_KEY=test pytest
+cd frontend-react && npm test
+```
 
-[Jules COCHARD] - [LinkedIn](https://www.linkedin.com/in/jules-cochard-835180335) - [Email](mailto:[jules.cochard@insa-cvl.fr])
+## Team
 
-[Adam ERRAIS] - [LinkedIn](https://www.linkedin.com/in/adam-errais-3408b3334/) - [Email](mailto:[adam.errais@insa-cvl.fr])
+- Ted Barbier
+- Jules Cochard
+- Adam Errais
+- Emmy Granier
+- Nguyen Dinh-Huy
+- Nguyen Nhat-Lam
 
-[Emmy GRANIER] - [LinkedIn](https://www.linkedin.com/in/emmy-granier-741a88337/) - [Email](mailto:[emmy.granier@insa-cvl.fr])
-
-[NGUYEN Dinh-Huy] - [Email](mailto:[dinh_huy.nguyen@insa-cvl.fr])
-
-[NGUYEN Nhat-Lam] - [LinkedIn](https://www.linkedin.com/in/nhat-lam-nguyen/) - [Email](nhat_lam.nguyen@insa-cvl.fr])
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-Ce projet a été réalisé dans un cadre pédagogique avec le soutien de notre encadrant Xavier Bultel. Nous remercions également les plateformes et ressources open-source suivantes qui ont facilité notre développement :
-* [Python](https://www.python.org/)
-* [Django](https://www.djangoproject.com/)
-* [Wikipedia](https://fr.wikipedia.org/wiki/Analyse_de_fr%C3%A9quence) – pour les bases théoriques de la cryptanalyse
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[python.com]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
-[django.com]: https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white
-[react.com]: https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB
-[ts.com]: https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white
-
-
-
-
+Frequency-analysis background: [Wikipedia](https://fr.wikipedia.org/wiki/Analyse_de_fr%C3%A9quence).

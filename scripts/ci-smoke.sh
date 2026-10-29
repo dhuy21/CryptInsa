@@ -63,7 +63,7 @@ match = re.search(r'src="(/assets/[^"]+\.js)"', home.decode())
 if not match:
     raise SystemExit("built page has no hashed script")
 status, content_type, script = request(match.group(1))
-if content_type != "application/javascript" or script.lstrip().lower().startswith(b"<!doctype"):
+if content_type not in ("application/javascript", "text/javascript") or script.lstrip().lower().startswith(b"<!doctype"):
     raise SystemExit(f"asset failed: {status} {content_type}")
 
 status, content_type, body = request(

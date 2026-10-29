@@ -1,0 +1,30 @@
+# Origin nginx. CloudFront connects to origin.cryptinsa.com:443 and sends
+# X-Origin-Verify. __ORIGIN_VERIFY__ is replaced on the instance. The value
+# is not stored in Git.
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name origin.cryptinsa.com;
+
+    ssl_certificate     /etc/nginx/certs/fullchain.pem;
+    ssl_certificate_key /etc/nginx/certs/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+
+    if ($http_x_origin_verify != "__ORIGIN_VERIFY__") {
+        return 403;
+    }
+
+    resolver 127.0.0.11 ipv6=off valid=10s;
+
+    location /api/ {
+        set $backend_upstream cryptinsa-backend:5000;
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass http://$backend_upstream;
+        include /etc/nginx/proxy_params;
+    }
+
+    location / {
+        return 404;
+    }
+}

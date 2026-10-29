@@ -18,7 +18,7 @@ The interface is French first. Home, About, and Help also have English. The ciph
 - React 19, TypeScript, Vite
 - Django (JSON API only, no database models)
 - Nginx in front of both services
-- Docker Compose, GitHub Actions, Railway
+- Docker Compose locally, GitHub Actions, AWS in production
 
 ## Run locally
 
@@ -53,6 +53,21 @@ Public paths are prefixed with `/api` (Vite in dev, Nginx in Docker). Django its
 | POST | `/api/update_attack` | Poll attack steps (`attackId`) |
 
 Attack state lives in process memory (at most 100 attacks). Plaintext, ciphertext, and the attack id live in the browser `localStorage`.
+
+## Production
+
+There is one environment: https://cryptinsa.com. No staging server.
+
+The browser talks to CloudFront. Hashed files in `/assets` come from a private S3 bucket. `/api` goes to one EC2 instance running Nginx and Django. Attack state stays in that one process, so there is no second copy of the API.
+
+GitHub Actions on `main` deploys that environment after the tests in `.github/workflows/backend-tests.yml` pass. It assumes an IAM role with GitHub OIDC. There is no access key in the workflow. Pull requests only run tests. A frontend change does not restart Django. An image change does, and clears attacks stored in memory.
+
+A clone does not contain AWS credentials, the Cloudflare API token, or Terraform state.
+
+- `infra/prod` keeps its state in the S3 bucket `cryptinsa-tfstate-eu-west-3`. Someone who can read that bucket runs `terraform init` and `terraform plan` in `infra/prod`.
+- `infra/bootstrap` created that bucket. Its state file stays on the machine that first applied it and is not in Git. Do not apply bootstrap again for this account.
+- DNS changes need `CLOUDFLARE_API_TOKEN` in the environment. Do not commit it.
+- App deploys are that same workflow. It can copy the origin scripts and the certificate timer back onto the existing instance. It does not create a new instance, and the Let's Encrypt account stays on that disk, not in Git.
 
 ## Tests
 

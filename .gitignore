@@ -47,6 +47,18 @@ instance/
 # fichiers secrets (à ne pas commiter)
 .env
 .env.local
+*.tfvars
+*.tfvars.json
+
+# Terraform local state and provider cache. The lock file stays in git.
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
 
 
 .Identifier

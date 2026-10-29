@@ -1,11 +1,20 @@
+# Tests on every push and pull request.
+# A push to main deploys https://cryptinsa.com after those tests pass.
+
 name: CI
 
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
+  id-token: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   pytest:
@@ -66,3 +75,146 @@ jobs:
       - name: Stop the stack
         if: always()
         run: docker compose down --remove-orphans
+
+  deploy-frontend:
+    needs: [pytest, frontend, compose-smoke]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend-react/package-lock.json
+      - name: Build
+        working-directory: frontend-react
+        run: npm ci && npm run build
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::557701609352:role/cryptinsa-deploy
+          aws-region: eu-west-3
+      - name: Upload
+        working-directory: frontend-react
+        run: |
+          bucket=cryptinsa-frontend-557701609352
+          aws s3 sync dist/ "s3://${bucket}/" \
+            --delete \
+            --exclude "index.html" \
+            --exclude "assets/*" \
+            --cache-control "no-cache"
+          aws s3 sync dist/assets/ "s3://${bucket}/assets/" \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable"
+          aws s3 cp dist/index.html "s3://${bucket}/index.html" \
+            --cache-control "no-cache" \
+            --content-type "text/html; charset=utf-8"
+      - name: Invalidate the HTML
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E3CUMPYF0VY52K \
+            --paths "/index.html" "/"
+
+  deploy-images:
+    needs: [pytest, frontend, compose-smoke]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      AWS_REGION: eu-west-3
+      INSTANCE_ID: i-03c299c48155f375d
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Decide whether the origin changed
+        id: changes
+        run: |
+          set -eu
+          images=false
+          scripts=false
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            images=true
+            scripts=true
+          else
+            before="${{ github.event.before }}"
+            if [ "$before" = "0000000000000000000000000000000000000000" ]; then
+              images=true
+              scripts=true
+            else
+              names=$(git diff --name-only "$before" "${{ github.sha }}")
+              if printf '%s\n' "$names" | grep -Eq '^(backend/|nginx/Dockerfile\.origin$|nginx/origin\.conf\.template$|nginx/origin-entrypoint\.sh$|nginx/proxy_params$)'; then
+                images=true
+              fi
+              if printf '%s\n' "$names" | grep -Eq '^deploy/origin/'; then
+                scripts=true
+              fi
+            fi
+          fi
+          if [ "$images" = true ]; then
+            scripts=true
+          fi
+          echo "images=$images" >> "$GITHUB_OUTPUT"
+          echo "scripts=$scripts" >> "$GITHUB_OUTPUT"
+      - uses: aws-actions/configure-aws-credentials@v6
+        if: steps.changes.outputs.images == 'true' || steps.changes.outputs.scripts == 'true'
+        with:
+          role-to-assume: arn:aws:iam::557701609352:role/cryptinsa-deploy
+          aws-region: eu-west-3
+      - uses: docker/setup-qemu-action@v4
+        if: steps.changes.outputs.images == 'true'
+      - uses: docker/setup-buildx-action@v4
+        if: steps.changes.outputs.images == 'true'
+      - uses: aws-actions/amazon-ecr-login@v2
+        if: steps.changes.outputs.images == 'true'
+        id: login
+      - name: Build and push
+        if: steps.changes.outputs.images == 'true'
+        env:
+          REGISTRY: ${{ steps.login.outputs.registry }}
+          TAG: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -eu
+          docker buildx build --platform linux/arm64 --provenance=false --sbom=false --push \
+            -t "$REGISTRY/cryptinsa-backend:$TAG" \
+            --metadata-file /tmp/backend.json \
+            ./backend
+          docker buildx build --platform linux/arm64 --provenance=false --sbom=false --push \
+            -f nginx/Dockerfile.origin \
+            -t "$REGISTRY/cryptinsa-nginx:$TAG" \
+            --metadata-file /tmp/nginx.json \
+            ./nginx
+          backend_digest=$(python3 -c 'import json; print(json.load(open("/tmp/backend.json"))["containerimage.digest"])')
+          nginx_digest=$(python3 -c 'import json; print(json.load(open("/tmp/nginx.json"))["containerimage.digest"])')
+          echo "BACKEND_IMAGE=${REGISTRY}/cryptinsa-backend@${backend_digest}" >> "$GITHUB_ENV"
+          echo "NGINX_IMAGE=${REGISTRY}/cryptinsa-nginx@${nginx_digest}" >> "$GITHUB_ENV"
+      - name: Pin the digests
+        if: steps.changes.outputs.images == 'true'
+        run: |
+          set -eu
+          test -n "$BACKEND_IMAGE"
+          test -n "$NGINX_IMAGE"
+          aws ssm put-parameter --region "$AWS_REGION" \
+            --name /cryptinsa/prod/backend-image --type String --overwrite \
+            --value "$BACKEND_IMAGE"
+          aws ssm put-parameter --region "$AWS_REGION" \
+            --name /cryptinsa/prod/nginx-image --type String --overwrite \
+            --value "$NGINX_IMAGE"
+      - name: Install origin files
+        if: steps.changes.outputs.scripts == 'true'
+        env:
+          RESTART: ${{ steps.changes.outputs.images }}
+        run: python3 deploy/origin/install_remote.py
+
+  production-smoke:
+    needs: [deploy-frontend, deploy-images]
+    if: always() && needs.deploy-frontend.result == 'success' && needs.deploy-images.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Call the public site
+        env:
+          BASE_URL: https://cryptinsa.com
+        run: bash scripts/ci-smoke.sh

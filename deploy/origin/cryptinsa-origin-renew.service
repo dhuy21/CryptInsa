@@ -1,0 +1,6 @@
+[Unit]
+Description=Renew the CryptInsa origin certificate
+
+[Service]
+Type=oneshot
+ExecStart=/opt/cryptinsa/renew-cert.sh

@@ -8,8 +8,7 @@ server {
     listen [::]:${PORT};
     server_name _;
 
-    # PORT is 80 in Compose, published on the host as 8000.
-    # Railway sets PORT and sends the public domain to that same port.
+    # PORT is 80 in local Compose, published on the host as 8000.
     absolute_redirect off;
 
     # Compress at the edge. Upstream responses are proxied, so gzip_proxied is required.
@@ -19,8 +18,7 @@ server {
     gzip_min_length 1024;
     gzip_types text/css application/javascript application/json image/svg+xml text/plain;
 
-    # Docker Compose sets 127.0.0.11 and ipv6=off.
-    # Railway sets [fd12::10] and ipv6=on. Names are resolved per request.
+    # Docker Compose sets 127.0.0.11 and ipv6=off. Names are resolved per request.
     resolver ${NGINX_RESOLVER} ipv6=${NGINX_RESOLVER_IPV6} valid=${NGINX_RESOLVER_VALID};
 
     location /api/ {

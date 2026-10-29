@@ -1,0 +1,10 @@
+FROM nginx:1.28-alpine
+
+COPY origin.conf.template /opt/cryptinsa/origin.conf.template
+COPY proxy_params /etc/nginx/proxy_params
+COPY origin-entrypoint.sh /origin-entrypoint.sh
+
+RUN chmod 755 /origin-entrypoint.sh
+
+ENTRYPOINT ["/origin-entrypoint.sh"]
+EXPOSE 443

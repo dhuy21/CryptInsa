@@ -119,6 +119,7 @@ data "aws_iam_policy_document" "terraform_plan" {
       "cloudfront:Get*",
       "cloudfront:List*",
       "ec2:Describe*",
+      "ec2:Get*",
       "ecr:Describe*",
       "ecr:Get*",
       "ecr:List*",

@@ -67,7 +67,7 @@ A clone does not contain AWS credentials, the Cloudflare API token, or Terraform
 - `infra/prod` keeps its state in the S3 bucket `cryptinsa-tfstate-eu-west-3`. `.github/workflows/terraform.yml` runs `terraform plan` on a pull request and on `main`. A push to `main` that changes infrastructure waits for approval, then applies that plan with a separate IAM role from the app deploy.
 - `infra/bootstrap` created that bucket. Its state file stays on the machine that first applied it and is not in Git. Do not apply bootstrap again for this account.
 - DNS changes need `CLOUDFLARE_API_TOKEN` in the environment. Do not commit it.
-- CD can copy the origin scripts and the certificate timer back onto the existing instance. It does not create a new instance, and the Let's Encrypt account stays on that disk, not in Git.
+- CD can copy the origin scripts and the certificate timer back onto the existing instance. It does not create a new instance, and changing the origin AMI does not replace the instance that is already running. A later instance boots from that AMI, starts the API from SSM, and requests its own Let's Encrypt certificate.
 
 ## Tests
 

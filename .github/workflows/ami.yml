@@ -1,0 +1,26 @@
+# Rebuild the origin AMI. The running instance is not replaced.
+# Approval is required because this job can launch an EC2 instance.
+
+name: Origin AMI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  bake:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::557701609352:role/cryptinsa-terraform-apply
+          aws-region: eu-west-3
+      - name: Build the AMI
+        run: bash deploy/origin/bake-ami.sh

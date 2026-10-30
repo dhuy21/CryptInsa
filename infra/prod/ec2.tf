@@ -1,20 +1,15 @@
-data "aws_ami" "al2023" {
+data "aws_ami" "origin" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["self"]
 
   filter {
-    name   = "name"
-    values = ["al2023-ami-2023*-kernel-6.18-arm64"]
+    name   = "tag:Role"
+    values = ["cryptinsa-origin"]
   }
 
   filter {
-    name   = "architecture"
-    values = ["arm64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+    name   = "state"
+    values = ["available"]
   }
 }
 
@@ -42,7 +37,7 @@ resource "aws_iam_instance_profile" "ec2" {
 }
 
 resource "aws_instance" "origin" {
-  ami           = data.aws_ami.al2023.id
+  ami           = data.aws_ami.origin.id
   instance_type = "t4g.micro"
   subnet_id     = aws_subnet.public.id
 
@@ -53,11 +48,12 @@ resource "aws_instance" "origin" {
   # boot the instance before the default route exists.
   depends_on = [aws_route_table_association.public]
 
+  # A new instance runs the scripts baked into the AMI. Changing this
+  # script or the AMI must not replace the instance that is already serving.
   user_data = <<-EOT
     #!/bin/bash
     set -eux
-    dnf install -y docker
-    systemctl enable --now docker
+    /opt/cryptinsa/boot.sh
   EOT
 
   metadata_options {
@@ -78,7 +74,7 @@ resource "aws_instance" "origin" {
   # Attack state is in this process. A newer Amazon Linux AMI must not
   # replace the instance during an unrelated apply.
   lifecycle {
-    ignore_changes = [ami]
+    ignore_changes = [ami, user_data]
   }
 }
 

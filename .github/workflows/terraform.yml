@@ -1,5 +1,5 @@
-# Plan on pull requests and on main. Apply only when someone runs this workflow.
-# The apply job uses the production environment, so a required reviewer pauses it.
+# Plan on pull requests and on main. A push to main with changes waits
+# for approval on the production environment, then applies that plan.
 
 name: Terraform
 
@@ -13,7 +13,6 @@ on:
     paths:
       - infra/prod/**
       - .github/workflows/terraform.yml
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -64,7 +63,7 @@ jobs:
             echo "changes=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Store the plan
-        if: github.event_name == 'workflow_dispatch' && steps.plan.outputs.changes == 'true'
+        if: github.event_name == 'push' && steps.plan.outputs.changes == 'true'
         working-directory: infra/prod
         run: |
           aws s3 cp tfplan "s3://cryptinsa-tfstate-eu-west-3/plans/${{ github.run_id }}.tfplan"
@@ -87,7 +86,7 @@ jobs:
 
   apply:
     needs: plan
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && needs.plan.outputs.changes == 'true'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.plan.outputs.changes == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     environment: production

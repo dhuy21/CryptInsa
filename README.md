@@ -64,7 +64,7 @@ The pipeline is `.github/workflows/ci-cd.yml`. GitHub Actions lists it as CI/CD.
 
 A clone does not contain AWS credentials, the Cloudflare API token, or Terraform state.
 
-- `infra/prod` keeps its state in the S3 bucket `cryptinsa-tfstate-eu-west-3`. `.github/workflows/terraform.yml` runs `terraform plan` on a pull request and on `main`. It does not apply those plans. Applying is a manual run of that workflow on `main`, with a separate IAM role from the app deploy.
+- `infra/prod` keeps its state in the S3 bucket `cryptinsa-tfstate-eu-west-3`. `.github/workflows/terraform.yml` runs `terraform plan` on a pull request and on `main`. A push to `main` that changes infrastructure waits for approval, then applies that plan with a separate IAM role from the app deploy.
 - `infra/bootstrap` created that bucket. Its state file stays on the machine that first applied it and is not in Git. Do not apply bootstrap again for this account.
 - DNS changes need `CLOUDFLARE_API_TOKEN` in the environment. Do not commit it.
 - CD can copy the origin scripts and the certificate timer back onto the existing instance. It does not create a new instance, and the Let's Encrypt account stays on that disk, not in Git.

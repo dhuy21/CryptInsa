@@ -142,9 +142,20 @@ data "aws_iam_policy_document" "terraform_plan" {
   }
 
   statement {
-    sid       = "ReadOriginVerify"
+    sid       = "DescribeParameters"
     effect    = "Allow"
-    actions   = ["ssm:GetParameter", "ssm:GetParameters"]
+    actions   = ["ssm:DescribeParameters"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "ReadOriginVerify"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameter",
+      "ssm:GetParameters",
+      "ssm:ListTagsForResource",
+    ]
     resources = ["arn:aws:ssm:eu-west-3:557701609352:parameter/cryptinsa/prod/origin-verify"]
   }
 
@@ -244,6 +255,13 @@ data "aws_iam_policy_document" "terraform_apply" {
       "iam:DeleteUser",
       "iam:PutUserPolicy",
     ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "DescribeParameters"
+    effect    = "Allow"
+    actions   = ["ssm:DescribeParameters"]
     resources = ["*"]
   }
 

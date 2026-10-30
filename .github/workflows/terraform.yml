@@ -1,0 +1,113 @@
+# Plan on pull requests and on main. Apply only when someone runs this workflow.
+# The apply job uses the production environment, so a required reviewer pauses it.
+
+name: Terraform
+
+on:
+  pull_request:
+    paths:
+      - infra/prod/**
+      - .github/workflows/terraform.yml
+  push:
+    branches: [main]
+    paths:
+      - infra/prod/**
+      - .github/workflows/terraform.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      changes: ${{ steps.plan.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.0
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::557701609352:role/cryptinsa-terraform-plan
+          aws-region: eu-west-3
+      - name: Plan
+        id: plan
+        working-directory: infra/prod
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          terraform init -input=false
+          terraform fmt -check -recursive
+          terraform validate -no-color
+          set +e
+          terraform plan -input=false -no-color -lock-timeout=120s -detailed-exitcode -out=tfplan | tee plan.txt
+          code="${PIPESTATUS[0]}"
+          set -e
+          if [ "$code" -eq 1 ]; then
+            exit 1
+          fi
+          if [ "$code" -eq 2 ]; then
+            echo "changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changes=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Store the plan
+        if: github.event_name == 'workflow_dispatch' && steps.plan.outputs.changes == 'true'
+        working-directory: infra/prod
+        run: |
+          aws s3 cp tfplan "s3://cryptinsa-tfstate-eu-west-3/plans/${{ github.run_id }}.tfplan"
+      - name: Comment on the pull request
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let text = fs.readFileSync('infra/prod/plan.txt', 'utf8');
+            const changes = '${{ steps.plan.outputs.changes }}' === 'true';
+            const heading = changes ? 'Terraform plan has changes.' : 'Terraform plan has no changes.';
+            if (text.length > 60000) text = text.slice(0, 60000) + '\n... truncated';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: heading + '\n\n```\n' + text + '\n```'
+            });
+
+  apply:
+    needs: plan
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && needs.plan.outputs.changes == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.0
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::557701609352:role/cryptinsa-terraform-apply
+          aws-region: eu-west-3
+      - name: Apply the stored plan
+        working-directory: infra/prod
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          aws s3 cp "s3://cryptinsa-tfstate-eu-west-3/plans/${{ github.run_id }}.tfplan" tfplan
+          terraform init -input=false
+          terraform apply -input=false -lock-timeout=120s tfplan
+          aws s3 rm "s3://cryptinsa-tfstate-eu-west-3/plans/${{ github.run_id }}.tfplan"
